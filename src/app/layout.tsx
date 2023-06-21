@@ -1,8 +1,7 @@
+import { Header } from "@/components/Header";
 import { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"] });
+import "./globals.css";
 
 export const metadata: Metadata = {
   title: "おうちPOG",
@@ -16,9 +15,23 @@ export const metadata: Metadata = {
     },
     {
       rel: "apple-touch-icon",
-      url: "/icon,png",
+      url: "/apple-touch-icon,png",
+      sizes: "180x180",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      url: "/favicon-32x32.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      url: "/favicon-16x16.png",
     },
   ],
+  metadataBase: new URL("https://ouchi-pog.vercel.app"),
   openGraph: {
     title: "おうちPOG",
     description: "POG 集計アプリ",
@@ -26,13 +39,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <html lang="ja">
-      <body className={`${inter.className} min-h-[100vh]`}>
+    <html lang="ja" data-theme="cupcake">
+      <body className={`min-h-[100vh] bg-slate-50`}>
         <div className="modal" />
-        {children}
+        <Header />
+        <main className="px-5 pt-2">{children}</main>
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

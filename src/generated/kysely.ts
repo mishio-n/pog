@@ -49,7 +49,8 @@ export type Race = {
   point: number;
   result: number;
   horseId: number;
-  date: Timestamp;
+  date: string;
+  url: string;
   course: Course;
   grade: Grade;
 };
@@ -63,6 +64,7 @@ export type Rule = {
 export type Season = {
   id: Generated<number>;
   name: string;
+  isActive: Generated<boolean>;
 };
 export type DB = {
   Horse: Horse;

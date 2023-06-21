@@ -3,14 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "NODE_TLS_REJECT_UNAUTHORIZED=0 next dev",
+    "build": "NODE_TLS_REJECT_UNAUTHORIZED=0 next build",
     "start": "serve out",
     "lint": "next lint"
   },
   "dependencies": {
     "@prisma/client": "^4.15.0",
     "chart.js": "^4.3.0",
+    "daisyui": "^3.0.25",
     "gsap": "^3.11.5",
     "kysely": "^0.25.0",
     "next": "13.4.4",
@@ -23,6 +24,8 @@
     "tailwindcss": "3.3.2"
   },
   "devDependencies": {
+    "@kuma-ui/core": "^0.4.2",
+    "@kuma-ui/next-plugin": "^0.7.2",
     "@types/node": "20.2.5",
     "@types/pg": "^8.10.1",
     "@types/react": "18.2.8",
@@ -30,7 +33,7 @@
     "autoprefixer": "10.4.14",
     "eslint": "8.42.0",
     "eslint-config-next": "13.4.4",
-    "postcss": "8.4.24",
+    "postcss": "^8.4.24",
     "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "prisma-kysely": "^1.4.2",

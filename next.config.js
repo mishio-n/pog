@@ -1,9 +1,13 @@
+const { withKumaUI } = require("@kuma-ui/next-plugin");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   output: "export",
+  // kuma-uiで指定が必要なため残す
   experimental: {
-    typedRoutes: true,
+    appDir: true,
   },
 };
 
-module.exports = nextConfig;
+module.exports = withKumaUI(nextConfig);

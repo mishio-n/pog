@@ -1,22 +1,48 @@
-import { db } from "@/lib/db";
+import { MenuCard } from "@/components/MenuCard";
+import { SeasonSection } from "@/components/SeasonSection";
+import { kysely } from "@/lib/kysely";
 
 const getSeasons = async () => {
-  return db.selectFrom("Season").selectAll().execute();
+  return kysely.selectFrom("Season").where("isActive", "=", true).selectAll().execute();
 };
+
+const getRules = async () => {
+  return kysely.selectFrom("Rule").selectAll().execute();
+};
+
+const theme = [
+  {
+    bgColor: "bg-lime-50",
+    strokeColor: "border-lime-500",
+  },
+  {
+    bgColor: "bg-cyan-50",
+    strokeColor: "border-cyan-500",
+  },
+];
 
 const Home = async () => {
   const seasons = await getSeasons();
+  const rules = await getRules();
 
   return (
-    <main>
-      <div className="p-5">
-        {seasons.map((season) => (
-          <div key={season.id}>
-            <h2>{season.name}</h2>
-          </div>
-        ))}
-      </div>
-    </main>
+    <div className="artboard flex flex-col gap-8">
+      {seasons.map((season, i) => (
+        <div key={season.id}>
+          <SeasonSection name={season.name} />
+          {rules.map((rule, j) => (
+            <MenuCard
+              title={rule.name}
+              key={`${season.id}-${rule.id}`}
+              bgColor={theme[j].bgColor}
+              strokeColor={theme[j].strokeColor}
+              strokeStyle="solid"
+              to={`/${season.id}/${rule.id}`}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
   );
 };
 
