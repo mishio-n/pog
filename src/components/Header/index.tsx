@@ -1,8 +1,9 @@
 import Link from "next/link";
+import RaceResultButton from "../RaceResultRegisterButton";
 
 export const Header: React.FC = () => {
   return (
-    <header className="navbar sticky left-0 top-0 z-50 bg-[rgb(0,0,30)] text-neutral-content shadow-md shadow-gray-700">
+    <header className="navbar sticky left-0 top-0 z-50 flex justify-between bg-[rgb(0,0,30)] text-neutral-content shadow-md shadow-gray-700">
       <Link
         href={"/"}
         className="inline-flex cursor-pointer items-center justify-center text-center text-xl font-bold normal-case text-white"
@@ -17,6 +18,7 @@ export const Header: React.FC = () => {
         }
         <span className="ml-[68px]">おうちPOG</span>
       </Link>
+      <RaceResultButton />
     </header>
   );
 };

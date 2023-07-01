@@ -43,7 +43,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ja" data-theme="cupcake">
       <body className={`min-h-[100vh] bg-slate-50`}>
-        <div className="modal" />
+        <div id="modal" />
         <Header />
         <main className="px-5 pt-2">{children}</main>
       </body>
