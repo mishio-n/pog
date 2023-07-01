@@ -32,8 +32,8 @@ export const scrapeRaceData = async (raceId: string) => {
   } catch (error) {
     // グレードなしはスキップ
   }
-
-  const grade = match(gradeInfo.match(/Icon_GradeType(\d)$/)?.[1])
+  const gradeMathced = gradeInfo.match(/Icon_GradeType(\d)$/)?.[1];
+  const grade = match(gradeMathced)
     .with("1", () => Grade.G1)
     .with("2", () => Grade.G2)
     .with("3", () => Grade.G3)
