@@ -1,27 +1,35 @@
 import { BreadCrumbs } from "@/components/BreadCrumbs";
 import { prisma } from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
-import { Horses } from "./horses";
-import { OddsSwitchProvider } from "./oddsSwitchProvider";
-import { OddsSwitcher } from "./oddsSwitcher";
-import { OwnerResult } from "./ownerResult";
+import { HorseResult } from "./horseResult";
 
 type Props = {
   params: {
     seasonId: string;
     ruleId: string;
     ownerId: string;
+    horseId: string;
   };
 };
 
 export async function generateStaticParams(p: any) {
-  const owners = await prisma.owner.findMany();
+  const owners = await prisma.owner.findMany({ include: { horses: true } });
 
-  const params: Props["params"][] = owners.map((o) => ({
-    ownerId: `${o.id}`,
-    ruleId: `${o.ruleId}`,
-    seasonId: `${o.seasonId}`,
-  }));
+  const params: Props["params"][] = [];
+  owners.forEach((o) => {
+    const ownerId = `${o.id}`;
+    const ruleId = `${o.ruleId}`;
+    const seasonId = `${o.seasonId}`;
+
+    o.horses.forEach((h) => {
+      params.push({
+        seasonId,
+        ruleId,
+        ownerId,
+        horseId: `${h.id}`,
+      });
+    });
+  });
 
   return params;
 }
@@ -31,15 +39,22 @@ const OwnerPage = async ({ params }: Props) => {
   const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +params.ruleId } });
   const owner = await prisma.owner.findUniqueOrThrow({
     where: { id: +params.ownerId },
-    include: { horses: { include: { races: true } } },
+  });
+  const horse = await prisma.horse.findUniqueOrThrow({
+    where: { id: +params.horseId },
+    include: {
+      races: {
+        orderBy: {
+          date: "desc",
+        },
+      },
+    },
   });
 
-  const horsesWithRacePoint = owner.horses
-    .map((horse) => ({
-      ...horse,
-      ...aggregateRacePoint(horse.races, rule.isDart),
-    }))
-    .sort((a, b) => b.totalPoint - a.totalPoint);
+  const horseWithRacePoint = {
+    ...horse,
+    ...aggregateRacePoint(horse.races, rule.isDart),
+  };
 
   return (
     <div className="">
@@ -53,18 +68,15 @@ const OwnerPage = async ({ params }: Props) => {
             slug: `${params.ownerId}`,
             label: owner.name,
           },
+          {
+            slug: `${params.horseId}`,
+            label: horse.name,
+          },
         ]}
       />
 
       <div className="artboard flex flex-col">
-        <OddsSwitchProvider>
-          <OddsSwitcher />
-          <OwnerResult horsesWithRacePoint={horsesWithRacePoint} />
-          <Horses
-            horsesWithRacePoint={horsesWithRacePoint}
-            basePath={`/${season.id}/${rule.id}/${owner.id}`}
-          />
-        </OddsSwitchProvider>
+        <HorseResult horseWithRacePoint={horseWithRacePoint} />
       </div>
     </div>
   );

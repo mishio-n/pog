@@ -15,7 +15,7 @@ export const BreadCrumbs: React.FC<Props> = ({ paths }) => {
       result.push(path);
     } else {
       result.push({
-        slug: `${result[i - 1].slug}/${path}`,
+        slug: `${result[i - 1].slug}/${path.slug}`,
         label: path.label,
       });
     }
