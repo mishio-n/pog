@@ -1,5 +1,7 @@
-import { MenuCard } from "@/components/MenuCard";
+import { BreadCrumbs } from "@/components/BreadCrumbs";
 import { prisma } from "@/lib/prisma";
+import { aggregateRacePoint } from "@/logic/race-point";
+import { Owners } from "./owners";
 
 type Props = {
   params: {
@@ -21,54 +23,49 @@ export async function generateStaticParams() {
   return params;
 }
 
-const getOwners = async (params: Props["params"]) => {
+const OwnersPage = async ({ params }: Props) => {
   const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });
   const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +params.ruleId } });
-
-  return prisma.owner.findMany({
+  const owners = await prisma.owner.findMany({
     where: {
       ruleId: rule.id,
       seasonId: season.id,
     },
-  });
-};
-
-const getPageData = async (params: Props["params"]) => {
-  const owners = await getOwners(params);
-  const horses = await prisma.horse.findMany({
-    where: {
-      owners: {
-        some: { id: { in: owners.map((o) => o.id) } },
+    include: {
+      horses: {
+        include: {
+          races: true,
+        },
       },
     },
-    include: {
-      race: true,
-      owners: true,
-    },
   });
 
-  return {
-    owners,
-    horses,
-  };
-};
-
-const RulePage = async ({ params }: Props) => {
-  const { owners, horses } = await getPageData(params);
+  // 獲得ポイントの集計
+  const ownerWithPoints = owners
+    .map((owner) => ({
+      ...owner,
+      totalPoint: owner.horses.reduce(
+        (result, horse) => result + aggregateRacePoint(horse.races, rule.isDart).totalPoint,
+        0
+      ),
+    }))
+    .sort((a, b) => b.totalPoint - a.totalPoint);
 
   return (
-    <div className="artboard flex flex-col gap-8">
-      {owners.map((owner, i) => (
-        <MenuCard
-          title={owner.name}
-          key={`owner-${owner.id}`}
-          strokeColor={"bg-white"}
-          strokeStyle="solid"
-          to={`${params.seasonId}/${params.ruleId}/${owner.id}`}
-        />
-      ))}
+    <div className="">
+      <BreadCrumbs
+        paths={[
+          {
+            slug: `${params.seasonId}/${params.ruleId}`,
+            label: `${season.name} ・ ${rule.name}`,
+          },
+        ]}
+      />
+      <div className="artboard flex flex-col gap-2">
+        <Owners ownerWithPoints={ownerWithPoints} basePath={`/${season.id}/${rule.id}`} />
+      </div>
     </div>
   );
 };
 
-export default RulePage;
+export default OwnersPage;

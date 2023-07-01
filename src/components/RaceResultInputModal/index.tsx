@@ -14,7 +14,7 @@ export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
 
   const postRaceResult = useCallback(async () => {
     setLoading(true);
-    await fetch("/api/race", {
+    await fetch("/api/races", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

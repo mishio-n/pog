@@ -1,5 +1,5 @@
-import { MenuCard } from "@/components/MenuCard";
-import { SeasonSection } from "@/components/SeasonSection";
+import { MenuCard } from "@/app/menuCard";
+import { SeasonSection } from "@/app/seasonSection";
 import { kysely } from "@/lib/kysely";
 
 const getSeasons = async () => {
