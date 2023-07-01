@@ -12,12 +12,10 @@ const getRules = async () => {
 
 const theme = [
   {
-    bgColor: "bg-lime-50",
     strokeColor: "border-lime-500",
   },
   {
-    bgColor: "bg-cyan-50",
-    strokeColor: "border-cyan-500",
+    strokeColor: "border-orange-200",
   },
 ];
 
@@ -34,7 +32,6 @@ const Home = async () => {
             <MenuCard
               title={rule.name}
               key={`${season.id}-${rule.id}`}
-              bgColor={theme[j].bgColor}
               strokeColor={theme[j].strokeColor}
               strokeStyle="solid"
               to={`/${season.id}/${rule.id}`}

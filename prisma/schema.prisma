@@ -72,11 +72,12 @@ model Horse {
   stable         String
   region         Region
   owners         Owner[]
+  inStable       Boolean        @default(false)
 }
 
 model Race {
   id      Int    @id @default(autoincrement())
-  race    String
+  name    String
   odds    Float
   point   Int
   result  Int

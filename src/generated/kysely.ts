@@ -35,6 +35,7 @@ export type Horse = {
   genderCategory: GenderCategory;
   stable: string;
   region: Region;
+  inStable: Generated<boolean>;
 };
 export type Owner = {
   id: Generated<number>;
@@ -44,7 +45,7 @@ export type Owner = {
 };
 export type Race = {
   id: Generated<number>;
-  race: string;
+  name: string;
   odds: number;
   point: number;
   result: number;

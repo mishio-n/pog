@@ -18,10 +18,12 @@
     "next-pwa": "^5.6.0",
     "pg": "^8.11.0",
     "prisma": "^4.15.0",
+    "puppeteer": "^20.7.4",
     "react": "18.2.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "18.2.0",
-    "tailwindcss": "3.3.2"
+    "tailwindcss": "3.3.2",
+    "ts-pattern": "^5.0.1"
   },
   "devDependencies": {
     "@kuma-ui/core": "^0.4.2",

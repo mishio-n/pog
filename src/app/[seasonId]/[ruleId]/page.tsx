@@ -33,9 +33,28 @@ const getOwners = async (params: Props["params"]) => {
   });
 };
 
-const RulePage = async ({ params }: Props) => {
-  console.log(params);
+const getPageData = async (params: Props["params"]) => {
   const owners = await getOwners(params);
+  const horses = await prisma.horse.findMany({
+    where: {
+      owners: {
+        some: { id: { in: owners.map((o) => o.id) } },
+      },
+    },
+    include: {
+      race: true,
+      owners: true,
+    },
+  });
+
+  return {
+    owners,
+    horses,
+  };
+};
+
+const RulePage = async ({ params }: Props) => {
+  const { owners, horses } = await getPageData(params);
 
   return (
     <div className="artboard flex flex-col gap-8">
@@ -43,7 +62,6 @@ const RulePage = async ({ params }: Props) => {
         <MenuCard
           title={owner.name}
           key={`owner-${owner.id}`}
-          bgColor={"bg-red"}
           strokeColor={"bg-white"}
           strokeStyle="solid"
           to={`${params.seasonId}/${params.ruleId}/${owner.id}`}
@@ -54,5 +72,3 @@ const RulePage = async ({ params }: Props) => {
 };
 
 export default RulePage;
-
-// yearはセクションにして、ルールからカード化する？
