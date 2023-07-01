@@ -10,19 +10,29 @@ type Body = {
 export async function POST(request: NextRequest) {
   const { raceId }: Body = await request.json();
 
-  const datas = await scrapeRaceData(raceId);
-  for (const data of datas) {
+  const results = await scrapeRaceData(raceId);
+  for (const result of results) {
     await prisma.race.create({
-      data: { ...data, horse: { connect: { id: data.horse.id } } },
+      data: {
+        name: result.name,
+        odds: result.odds,
+        point: result.point,
+        result: result.result,
+        horseId: result.horse.id,
+        date: result.date,
+        url: result.url,
+        course: result.course,
+        grade: result.grade,
+      },
     });
     const owners = await prisma.owner.findMany({
-      where: { horses: { some: { id: data.horse.id } } },
+      where: { horses: { some: { id: result.horse.id } } },
     });
 
     for (const owner of owners) {
-      revalidatePath(`${owner.seasonId}/${owner.ruleId}/${owner.id}/${data.horse.id}`);
+      revalidatePath(`${owner.seasonId}/${owner.ruleId}/${owner.id}/${result.horse.id}`);
     }
   }
 
-  return NextResponse.json(datas);
+  return NextResponse.json(results);
 }
