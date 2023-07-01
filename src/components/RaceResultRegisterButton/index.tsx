@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { RaceForm } from "../RaceResultInputModal";
+import { Toaster, toast } from "react-hot-toast";
+import { RaceResultInputModal } from "../RaceResultInputModal";
 
-const RaceResultButton: React.FC = () => {
+export const RaceResultRegisterButton: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -15,9 +16,23 @@ const RaceResultButton: React.FC = () => {
         <span className="text-lg text-transparent text-shadow">&#9999;&#65039;</span>
         <span className="font-bold text-accent">レース結果</span>
       </button>
-      {open && <RaceForm onClose={() => setOpen(false)} />}
+      {open && (
+        <RaceResultInputModal
+          onClose={(horses) => {
+            setOpen(false);
+            horses.forEach((horse) => {
+              if (horse === "error") {
+                toast.error("登録エラーです");
+              } else {
+                toast.success(`${horse}の結果が登録されました`);
+              }
+            });
+          }}
+        />
+      )}
+      <div className="absolute top-64 flex justify-center">
+        <Toaster />
+      </div>
     </div>
   );
 };
-
-export default RaceResultButton;

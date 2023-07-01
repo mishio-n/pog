@@ -1,5 +1,5 @@
 import Link from "next/link";
-import RaceResultButton from "../RaceResultRegisterButton";
+import { RaceResultRegisterButton } from "../RaceResultRegisterButton";
 
 export const Header: React.FC = () => {
   return (
@@ -18,7 +18,7 @@ export const Header: React.FC = () => {
         }
         <span className="ml-[68px]">おうちPOG</span>
       </Link>
-      <RaceResultButton />
+      <RaceResultRegisterButton />
     </header>
   );
 };

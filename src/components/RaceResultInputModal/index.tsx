@@ -5,10 +5,10 @@ import { Portal } from "./portal";
 import { Spinner } from "./spinner";
 
 type Props = {
-  onClose: () => void;
+  onClose: (horses: string[]) => void;
 };
 
-export const RaceForm: React.FC<Props> = ({ onClose }) => {
+export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
   const [raceId, setRaceId] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,13 +20,25 @@ export const RaceForm: React.FC<Props> = ({ onClose }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        raceId: raceId,
+        raceId,
       }),
     })
-      .then(() => {
-        onClose();
+      .then(async (res) => {
+        if (res.status !== 200) {
+          onClose(["error"]);
+          return;
+        }
+
+        res
+          .json()
+          .then((results: { horse: { name: string } }[]) =>
+            onClose(results.map((r) => r.horse.name))
+          );
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        onClose(["error"]);
+      });
   }, [raceId, onClose]);
 
   const canClick = useMemo(() => raceId !== "" && raceId.match(/^\d+$/), [raceId]);
@@ -35,11 +47,11 @@ export const RaceForm: React.FC<Props> = ({ onClose }) => {
     <Portal>
       <div
         className="absolute left-0 top-0 z-50 flex h-full w-full items-center justify-center bg-[rgba(0,0,0,0.5)]"
-        onClick={() => onClose()}
+        onClick={() => !loading && onClose([])}
       >
         <div className="h-[300px] w-64 rounded-md bg-slate-50" onClick={(e) => e.stopPropagation()}>
           <div className="flex justify-end">
-            <button className="btn-ghost btn-square btn text-3xl" onClick={() => onClose()}>
+            <button className="btn-ghost btn-square btn text-3xl" onClick={() => onClose([])}>
               ×
             </button>
           </div>
