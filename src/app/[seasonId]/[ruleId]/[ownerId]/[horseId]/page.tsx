@@ -80,7 +80,7 @@ const OwnerPage = async ({ params }: Props) => {
       <div className="artboard flex flex-col">
         <HorseDetail horse={horse} />
         <HorseResult horseWithRacePoint={horseWithRacePoint} />
-        <Races horseWithRacePoint={horseWithRacePoint} />
+        <Races horseWithRacePoint={horseWithRacePoint} isDart={rule.isDart} />
       </div>
     </div>
   );

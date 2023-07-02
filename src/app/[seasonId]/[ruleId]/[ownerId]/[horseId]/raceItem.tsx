@@ -7,6 +7,7 @@ import { match } from "ts-pattern";
 
 type Props = {
   race: Race;
+  isDart: boolean;
 };
 
 const ResultShineBadge = styled("div")`
@@ -38,7 +39,7 @@ const ResultShineBadge = styled("div")`
   }
 `;
 
-export const RaceItem: React.FC<Props> = ({ race }) => {
+export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
   const resultBgColor = match(race.result)
     .with(1, () => `bg-[#f7ef8e]`)
     .with(2, () => `bg-[#e1e7ef]`)
@@ -80,7 +81,9 @@ export const RaceItem: React.FC<Props> = ({ race }) => {
         </div>
         <div className="flex flex-col items-end">
           <div>
-            <span className="ml-2 font-mono text-xl">{Math.round(race.odds * race.point)}</span>
+            <span className="ml-2 font-mono text-xl">
+              {Math.round(race.odds * race.point) * (isDart ? -1 : 1)}
+            </span>
             <span className="ml-2 text-sm">pt</span>
           </div>
           <div>
