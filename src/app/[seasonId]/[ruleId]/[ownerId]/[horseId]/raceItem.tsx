@@ -62,10 +62,20 @@ export const RaceItem: React.FC<Props> = ({ race }) => {
               <span className="text-sm">着</span>
             </ResultShineBadge>
           )}
-          <Link rel="noreferrer" target="_blank" href={race.url}>
-            <span className="ml-4 w-32 overflow-hidden text-ellipsis whitespace-nowrap text-xl">
+          <Link
+            rel="noreferrer"
+            target="_blank"
+            href={race.url}
+            className="ml-4 flex flex-col gap-[2px]"
+          >
+            <span className="w-32 overflow-hidden text-ellipsis whitespace-nowrap text-xl">
               {race.name}
             </span>
+            <div
+              className={`h-[2px] rounded-lg ${
+                race.course === "TURF" ? "bg-green-300" : "bg-orange-400"
+              }`}
+            />
           </Link>
         </div>
         <div className="flex flex-col items-end">
