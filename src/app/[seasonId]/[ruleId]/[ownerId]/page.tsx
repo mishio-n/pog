@@ -14,7 +14,7 @@ type Props = {
   };
 };
 
-export async function generateStaticParams(p: any) {
+export async function generateStaticParams() {
   const owners = await prisma.owner.findMany();
 
   const params: Props["params"][] = owners.map((o) => ({

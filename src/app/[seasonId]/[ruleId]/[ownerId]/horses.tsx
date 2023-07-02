@@ -38,9 +38,9 @@ export const Horses: React.FC<Props> = ({ horsesWithRacePoint, basePath }) => {
                 {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={`https://zekken-maker.vercel.app?name=${horse.name}&number=${
-                      i + 1
-                    }&type=${zekkenType(horse.races)}`}
+                    src={`https://zekken-maker.vercel.app?name=${
+                      horse.name.includes("の") ? "バメイミテイ" : horse.name
+                    }&number=${i + 1}&type=${zekkenType(horse.races)}`}
                     alt={horse.name}
                     className="w-8"
                   />

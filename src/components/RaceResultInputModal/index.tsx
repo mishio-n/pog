@@ -1,8 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { Portal } from "./portal";
-import { Spinner } from "./spinner";
+import { Portal } from "../Portal";
 
 type Props = {
   onClose: (horses: string[]) => void;
@@ -67,7 +66,7 @@ export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
             </label>
           </div>
 
-          <div className="my-8 text-center">
+          <div className="my-8 flex flex-col items-center justify-center gap-2 text-center">
             <button
               className="btn-info btn w-[120px] text-slate-50 shadow-md"
               onClick={() => postRaceResult()}
@@ -75,7 +74,7 @@ export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
             >
               登録する
             </button>
-            {loading && <Spinner />}
+            {loading && <span className="loading loading-dots loading-lg"></span>}
           </div>
         </div>
       </div>

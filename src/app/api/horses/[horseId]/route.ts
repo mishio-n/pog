@@ -7,11 +7,16 @@ type Body = {
   horseId: string;
 };
 
-export async function PATCH(request: NextRequest) {
-  const { horseId }: Body = await request.json();
+export async function PATCH(request: NextRequest, { params }: { params: { horseId: string } }) {
+  const { horseId } = params;
 
   const horse = await prisma.horse.findUniqueOrThrow({ where: { id: +horseId } });
   const inStable = await getInStable(horse.url);
+
+  if (horse.inStable === inStable) {
+    return NextResponse.json({ status: 204 });
+  }
+
   await prisma.horse.update({
     where: { id: horse.id },
     data: { inStable },

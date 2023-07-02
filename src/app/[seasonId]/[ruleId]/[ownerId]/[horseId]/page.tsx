@@ -1,7 +1,9 @@
 import { BreadCrumbs } from "@/components/BreadCrumbs";
 import { prisma } from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
+import { HorseDetail } from "./horseDeatil";
 import { HorseResult } from "./horseResult";
+import { Races } from "./races";
 
 type Props = {
   params: {
@@ -12,7 +14,7 @@ type Props = {
   };
 };
 
-export async function generateStaticParams(p: any) {
+export async function generateStaticParams() {
   const owners = await prisma.owner.findMany({ include: { horses: true } });
 
   const params: Props["params"][] = [];
@@ -76,7 +78,9 @@ const OwnerPage = async ({ params }: Props) => {
       />
 
       <div className="artboard flex flex-col">
+        <HorseDetail horse={horse} />
         <HorseResult horseWithRacePoint={horseWithRacePoint} />
+        <Races horseWithRacePoint={horseWithRacePoint} />
       </div>
     </div>
   );
