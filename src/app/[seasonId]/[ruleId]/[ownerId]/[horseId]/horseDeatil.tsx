@@ -35,7 +35,7 @@ export const HorseDetail: React.FC<Props> = ({ horse }) => {
         </a>
       </h1>
       <div
-        className={`flex items-center ${horse.inStable ? "" : "opacity-40"}`}
+        className={`flex cursor-pointer items-center ${horse.inStable ? "" : "opacity-40"}`}
         onClick={() => {
           toast.promise(updateStableStaus(), {
             loading: "入厩状態チェック中...",
