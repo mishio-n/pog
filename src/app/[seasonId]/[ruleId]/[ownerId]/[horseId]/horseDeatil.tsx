@@ -15,7 +15,6 @@ export const HorseDetail: React.FC<Props> = ({ horse }) => {
     .with("RITTO", () => `bg-[#3D96D6]`)
     .otherwise(() => `bg-accent`);
 
-  const [open, setOpen] = useState(false);
   const [canClick, setCanClick] = useState(true);
 
   const updateStableStaus = async () =>
@@ -37,12 +36,12 @@ export const HorseDetail: React.FC<Props> = ({ horse }) => {
       <div
         className={`flex cursor-pointer items-center ${horse.inStable ? "" : "opacity-40"}`}
         onClick={() => {
-          toast.promise(updateStableStaus(), {
-            loading: "入厩状態チェック中...",
-            success: <b>入厩状態を更新しました</b>,
-            error: <b>更新に失敗しました</b>,
-          });
-          canClick && setOpen(true);
+          canClick &&
+            toast.promise(updateStableStaus(), {
+              loading: "入厩状態チェック中...",
+              success: <b>入厩状態を更新しました</b>,
+              error: <b>更新に失敗しました</b>,
+            });
           // 2回目以降更新する必要がないため
           setCanClick(false);
         }}
