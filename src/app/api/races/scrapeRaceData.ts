@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { Course, Grade } from "@prisma/client";
 import chromium from "chrome-aws-lambda";
 import playwright from "playwright-core";
-import puppeteer, { Browser } from "puppeteer";
+import puppeteer, { Browser } from "puppeteer-core";
 import { match } from "ts-pattern";
 
 export const scrapeRaceData = async (raceId: string) => {
