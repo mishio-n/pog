@@ -11,9 +11,9 @@ const nextConfig = {
     config.externals.push({
       "chrome-aws-lambda": "chrome-aws-lambda",
     });
-
     return config;
   },
+  swcMinify: true,
 };
 
 module.exports = withKumaUI(nextConfig);
