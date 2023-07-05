@@ -10,7 +10,6 @@ const nextConfig = {
   webpack: (config) => {
     config.externals.push({
       "chrome-aws-lambda": "chrome-aws-lambda",
-      "playwright-core": "playwright-core",
     });
 
     return config;

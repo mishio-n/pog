@@ -1,19 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { Course, Grade } from "@prisma/client";
-import playwright from "playwright-core";
+import chromium from "chrome-aws-lambda";
 import { Browser } from "puppeteer";
 import { match } from "ts-pattern";
 
 export const scrapeRaceData = async (raceId: string) => {
-  const chromium = (await import("chrome-aws-lambda")).default;
   const browser =
     process.env.NODE_ENV === "production"
-      ? ((await playwright.chromium.launch({
+      ? ((await chromium.puppeteer.launch({
           args: chromium?.args,
           executablePath: await chromium?.executablePath,
           headless: true,
         })) as unknown as Browser)
-      : ((await playwright.chromium.launch({ headless: true })) as unknown as Browser);
+      : ((await chromium.puppeteer.launch({ headless: true })) as unknown as Browser);
   const page = await browser.newPage();
 
   await page.goto(`https://race.netkeiba.com/race/result.html?race_id=${raceId}`);
