@@ -1,11 +1,11 @@
 import { prisma } from "@/lib/prisma";
 import { Course, Grade } from "@prisma/client";
-import chromium from "chrome-aws-lambda";
 import playwright from "playwright-core";
 import { Browser } from "puppeteer";
 import { match } from "ts-pattern";
 
 export const scrapeRaceData = async (raceId: string) => {
+  const chromium = (await import("chrome-aws-lambda")).default;
   const browser =
     process.env.NODE_ENV === "production"
       ? ((await playwright.chromium.launch({
