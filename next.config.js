@@ -7,6 +7,14 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
+  webpack: (config) => {
+    config.externals.push({
+      "chrome-aws-lambda": "chrome-aws-lambda",
+      "playwright-core": "playwright-core",
+    });
+
+    return config;
+  },
 };
 
 module.exports = withKumaUI(nextConfig);
