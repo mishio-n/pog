@@ -1,18 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { Course, Grade } from "@prisma/client";
-import chromium from "chrome-aws-lambda";
-import { Browser } from "puppeteer";
+import puppeteer from "puppeteer";
 import { match } from "ts-pattern";
 
 export const scrapeRaceData = async (raceId: string) => {
-  const browser =
-    process.env.NODE_ENV === "production"
-      ? ((await chromium.puppeteer.launch({
-          args: chromium?.args,
-          executablePath: await chromium?.executablePath,
-          headless: true,
-        })) as unknown as Browser)
-      : ((await chromium.puppeteer.launch({ headless: true })) as unknown as Browser);
+  const browser = await puppeteer.launch({ headless: true });
   const page = await browser.newPage();
 
   await page.goto(`https://race.netkeiba.com/race/result.html?race_id=${raceId}`);

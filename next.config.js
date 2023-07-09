@@ -7,12 +7,6 @@ const nextConfig = {
   experimental: {
     appDir: true,
   },
-  webpack: (config) => {
-    config.externals.push({
-      "chrome-aws-lambda": "chrome-aws-lambda",
-    });
-    return config;
-  },
   swcMinify: true,
 };
 
