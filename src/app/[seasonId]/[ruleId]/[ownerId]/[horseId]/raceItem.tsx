@@ -46,6 +46,8 @@ export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
     .with(3, () => `bg-[#eaac6e]`)
     .otherwise(() => "");
 
+  const coefficient = isDart && race.course === "TURF" ? -1 : 1;
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -82,7 +84,7 @@ export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
         <div className="flex flex-col items-end">
           <div>
             <span className="ml-2 font-mono text-xl">
-              {Math.round(race.odds * race.point) * (isDart ? -1 : 1)}
+              {Math.round(race.odds * race.point) * coefficient}
             </span>
             <span className="ml-2 text-sm">pt</span>
           </div>
