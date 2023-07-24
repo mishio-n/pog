@@ -11,8 +11,7 @@ export const RaceResultRegisterButton: React.FC = () => {
     <div>
       <button
         onClick={() => {
-          toast.error("現在利用できません");
-          // setOpen((p) => !p);
+          setOpen((p) => !p);
         }}
         className="btn flex items-center rounded-full border-none bg-slate-50 px-3 py-0 shadow-sm shadow-slate-50"
       >
