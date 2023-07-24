@@ -3,8 +3,15 @@ import { Course, Grade } from "@prisma/client";
 import puppeteer from "puppeteer";
 import { match } from "ts-pattern";
 
+const IS_PRODUCTION = process.env.NODE_ENV === "production";
+
 export const scrapeRaceData = async (raceId: string) => {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = IS_PRODUCTION
+    ? await puppeteer.connect({
+        browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_API_KEY}`,
+      })
+    : await puppeteer.launch({ headless: true });
+
   const page = await browser.newPage();
 
   await page.goto(`https://race.netkeiba.com/race/result.html?race_id=${raceId}`);
