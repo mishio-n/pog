@@ -1,7 +1,8 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Portal } from "../Portal";
+import { addRaceResult } from "./addRaceResult";
 
 type Props = {
   onClose: (horses: string[]) => void;
@@ -9,36 +10,16 @@ type Props = {
 
 export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
   const [raceId, setRaceId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, startTransition] = useTransition();
 
-  const postRaceResult = useCallback(async () => {
-    setLoading(true);
-    await fetch("/api/races", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        raceId,
-      }),
-    })
-      .then(async (res) => {
-        if (res.status !== 200) {
-          onClose(["error"]);
-          return;
-        }
+  const handleOnSuccess = (results: { horse: { name: string } }[]) => {
+    onClose(results.map((r) => r.horse.name));
+  };
 
-        res
-          .json()
-          .then((results: { horse: { name: string } }[]) =>
-            onClose(results.map((r) => r.horse.name))
-          );
-      })
-      .catch((error) => {
-        console.log(error);
-        onClose(["error"]);
-      });
-  }, [raceId, onClose]);
+  const handleOnError = (error: any) => {
+    console.log(error);
+    onClose(["error"]);
+  };
 
   const canClick = useMemo(() => raceId !== "" && raceId.match(/^\d+$/), [raceId]);
 
@@ -69,7 +50,11 @@ export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
           <div className="my-8 flex flex-col items-center justify-center gap-2 text-center">
             <button
               className="btn-info btn w-[120px] text-slate-50 shadow-md"
-              onClick={() => postRaceResult()}
+              onClick={() =>
+                startTransition(() =>
+                  addRaceResult({ raceId }).then(handleOnSuccess).catch(handleOnError)
+                )
+              }
               disabled={!canClick || loading}
             >
               登録する

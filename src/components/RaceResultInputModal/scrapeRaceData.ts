@@ -5,7 +5,6 @@ import { match } from "ts-pattern";
 
 export const scrapeRaceData = async (raceId: string) => {
   const IS_PRODUCTION = process.env.NODE_ENV === "production";
-  console.log(IS_PRODUCTION);
   const browser = await puppeteer.connect({
     browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_API_KEY}`,
   });

@@ -1,7 +1,9 @@
 import puppeteer from "puppeteer";
 
 export const getInStable = async (url: string): Promise<boolean> => {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.connect({
+    browserWSEndpoint: `wss://chrome.browserless.io?token=${process.env.BROWSERLESS_API_KEY}`,
+  });
   const page = await browser.newPage();
 
   await page.goto(url);

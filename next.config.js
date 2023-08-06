@@ -6,6 +6,7 @@ const nextConfig = {
   // kuma-uiで指定が必要なため残す
   experimental: {
     appDir: true,
+    serverActions: true,
   },
   swcMinify: true,
 };
