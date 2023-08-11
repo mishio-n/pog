@@ -14,17 +14,17 @@ type Props = {
   };
 };
 
-export async function generateStaticParams() {
-  const owners = await prisma.owner.findMany();
+// export async function generateStaticParams() {
+//   const owners = await prisma.owner.findMany();
 
-  const params: Props["params"][] = owners.map((o) => ({
-    ownerId: `${o.id}`,
-    ruleId: `${o.ruleId}`,
-    seasonId: `${o.seasonId}`,
-  }));
+//   const params: Props["params"][] = owners.map((o) => ({
+//     ownerId: `${o.id}`,
+//     ruleId: `${o.ruleId}`,
+//     seasonId: `${o.seasonId}`,
+//   }));
 
-  return params;
-}
+//   return params;
+// }
 
 const OwnerPage = async ({ params }: Props) => {
   const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });

@@ -10,18 +10,18 @@ type Props = {
   };
 };
 
-export async function generateStaticParams() {
-  const seasons = await prisma.season.findMany();
-  const rules = await prisma.rule.findMany();
+// export async function generateStaticParams() {
+//   const seasons = await prisma.season.findMany();
+//   const rules = await prisma.rule.findMany();
 
-  const params: { seasonId: string; ruleId: string }[] = [];
-  seasons.forEach((s) => {
-    rules.forEach((r) => {
-      params.push({ seasonId: `${s.id}`, ruleId: `${r.id}` });
-    });
-  });
-  return params;
-}
+//   const params: { seasonId: string; ruleId: string }[] = [];
+//   seasons.forEach((s) => {
+//     rules.forEach((r) => {
+//       params.push({ seasonId: `${s.id}`, ruleId: `${r.id}` });
+//     });
+//   });
+//   return params;
+// }
 
 const OwnersPage = async ({ params }: Props) => {
   const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });
