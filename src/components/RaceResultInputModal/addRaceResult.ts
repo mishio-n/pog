@@ -24,9 +24,12 @@ export async function addRaceResult({ raceId }: { raceId: string }) {
       where: { horses: { some: { id: result.horse.id } } },
     });
 
+    revalidatePath(`/`);
     for (const owner of owners) {
+      revalidatePath(`/${owner.seasonId}`);
+      revalidatePath(`/${owner.seasonId}/${owner.ruleId}`);
+      revalidatePath(`/${owner.seasonId}/${owner.ruleId}/${owner.id}`);
       revalidatePath(`/${owner.seasonId}/${owner.ruleId}/${owner.id}/${result.horse.id}`);
-      console.log(`/${owner.seasonId}/${owner.ruleId}/${owner.id}/${result.horse.id}`);
     }
   }
 
