@@ -26,6 +26,7 @@ export async function addRaceResult({ raceId }: { raceId: string }) {
 
     for (const owner of owners) {
       revalidatePath(`/${owner.seasonId}/${owner.ruleId}/${owner.id}/${result.horse.id}`);
+      console.log(`/${owner.seasonId}/${owner.ruleId}/${owner.id}/${result.horse.id}`);
     }
   }
 
