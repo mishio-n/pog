@@ -44,7 +44,7 @@ export async function updateStableStatus({ horseId }: { horseId: number }) {
   });
 
   for (const owner of owners) {
-    revalidatePath(`${owner.seasonId}/${owner.ruleId}/${owner.id}/${horse.id}`);
+    revalidatePath(`/${owner.seasonId}/${owner.ruleId}/${owner.id}/${horse.id}`);
   }
 
   return horse;
