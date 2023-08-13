@@ -5,6 +5,7 @@ const revalidate: NextApiHandler = async (req, res) => {
     return res.status(400).end();
   }
 
+  console.log(req.body);
   const paths = req.body.paths as string[];
 
   for (const path of paths) {
