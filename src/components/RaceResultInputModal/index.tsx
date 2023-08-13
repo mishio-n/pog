@@ -12,8 +12,8 @@ export const RaceResultInputModal: React.FC<Props> = ({ onClose }) => {
   const [raceId, setRaceId] = useState("");
   const [loading, startTransition] = useTransition();
 
-  const handleOnSuccess = (results: { horse: { name: string } }[]) => {
-    onClose(results.map((r) => r.horse.name));
+  const handleOnSuccess = () => {
+    onClose(["success"]);
   };
 
   const handleOnError = (error: any) => {

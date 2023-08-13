@@ -25,6 +25,8 @@ export const RaceResultRegisterButton: React.FC = () => {
             horses.forEach((horse) => {
               if (horse === "error") {
                 toast.error("登録エラーです");
+              } else if (horse === "success") {
+                toast.success("登録処理中です。0秒ほど待ってから更新してください。");
               } else {
                 toast.success(`${horse}の結果が登録されました`);
               }

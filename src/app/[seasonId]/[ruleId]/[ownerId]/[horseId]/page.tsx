@@ -14,27 +14,27 @@ type Props = {
   };
 };
 
-// export async function generateStaticParams() {
-//   const owners = await prisma.owner.findMany({ include: { horses: true } });
+export async function generateStaticParams() {
+  const owners = await prisma.owner.findMany({ include: { horses: true } });
 
-//   const params: Props["params"][] = [];
-//   owners.forEach((o) => {
-//     const ownerId = `${o.id}`;
-//     const ruleId = `${o.ruleId}`;
-//     const seasonId = `${o.seasonId}`;
+  const params: Props["params"][] = [];
+  owners.forEach((o) => {
+    const ownerId = `${o.id}`;
+    const ruleId = `${o.ruleId}`;
+    const seasonId = `${o.seasonId}`;
 
-//     o.horses.forEach((h) => {
-//       params.push({
-//         seasonId,
-//         ruleId,
-//         ownerId,
-//         horseId: `${h.id}`,
-//       });
-//     });
-//   });
+    o.horses.forEach((h) => {
+      params.push({
+        seasonId,
+        ruleId,
+        ownerId,
+        horseId: `${h.id}`,
+      });
+    });
+  });
 
-//   return params;
-// }
+  return params;
+}
 
 const OwnerPage = async ({ params }: Props) => {
   const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });

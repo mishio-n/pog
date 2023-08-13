@@ -2,7 +2,7 @@
 
 import { Horse } from "@prisma/client";
 import { useState } from "react";
-import { Toaster, toast } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { match } from "ts-pattern";
 
 type Props = {
@@ -32,10 +32,6 @@ export const HorseDetail: React.FC<Props> = ({ horse }) => {
         className={`flex cursor-pointer items-center`}
         // className={`flex cursor-pointer items-center ${horse.inStable ? "" : "opacity-40"}`}
         disabled={!canClick}
-        onClick={() => {
-          toast.error("入厩状態の更新は現在対応していません");
-          setCanClick(false);
-        }}
         // onClick={() => updateStableStatus({ horseId: horse.id }).then(() => setCanClick(false))}
       >
         <div className={`h-[18px] w-[18px] rounded-full ${stableColor}`} />
