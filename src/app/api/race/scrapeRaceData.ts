@@ -12,7 +12,9 @@ export const scrapeRaceData = async (raceId: string) => {
 
   const page = await browser.newPage();
 
-  await page.goto(`https://race.netkeiba.com/race/result.html?race_id=${raceId}`);
+  await page.goto(`https://race.netkeiba.com/race/result.html?race_id=${raceId}`, {
+    waitUntil: "domcontentloaded",
+  });
 
   const raceTitle = await page.$("div.RaceName");
   if (raceTitle === null) {
