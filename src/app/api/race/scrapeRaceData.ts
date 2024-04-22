@@ -16,12 +16,12 @@ export const scrapeRaceData = async (raceId: string) => {
     waitUntil: "domcontentloaded",
   });
 
-  const raceTitle = await page.$("div.RaceName");
+  const raceTitle = await page.$("h1.RaceName");
   if (raceTitle === null) {
     throw new Error("raceTitle is not found");
   }
 
-  const title = await page.$eval("div.RaceName", (el) => el.textContent);
+  const title = await page.$eval("h1.RaceName", (el) => el.textContent);
   if (title === null) {
     throw new Error("title is not found");
   }
