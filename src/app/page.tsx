@@ -3,7 +3,12 @@ import { SeasonSection } from "@/app/seasonSection";
 import { kysely } from "@/lib/kysely";
 
 const getSeasons = async () => {
-  return kysely.selectFrom("Season").where("isActive", "=", true).selectAll().execute();
+  return kysely
+    .selectFrom("Season")
+    .where("isActive", "=", true)
+    .selectAll()
+    .orderBy("id", "desc")
+    .execute();
 };
 
 const getRules = async () => {

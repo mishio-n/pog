@@ -38,3 +38,5 @@ next-env.d.ts
 tsconfig.node.json
 2022-*
 2023-*
+insert.mts
+*.csv
