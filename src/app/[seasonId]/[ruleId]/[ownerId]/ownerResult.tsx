@@ -46,21 +46,22 @@ export const OwnerResult: React.FC<Props> = ({ horsesWithRacePoint }) => {
         <span className="ml-2 text-lg font-semibold">成績</span>
       </div>
       <div className="mx-2 flex flex-col p-1 ">
-        <div className="mt-2 flex w-[280px] items-center justify-between">
+        <div className="mt-2 flex w-full items-center justify-between">
           <span className="font-semibold">合計　　　：</span>
-          <div className="ml-2 flex items-center">
+          <div className="ml-2 flex items-center"></div>
+          <div>
             <span className="font-mono text-xl">{sumPoint()}</span>
             <span className="ml-2">ポイント</span>
           </div>
         </div>
-        <div className="mt-2 flex w-[280px] items-center justify-between">
+        <div className="mt-2 flex w-full items-center justify-between">
           <span className="font-semibold">平均オッズ：</span>
           <div className="ml-2 flex items-center">
             <span className="font-mono text-xl">{ageraveOdds()}</span>
             <span className="ml-2">倍</span>
           </div>
         </div>
-        <div className="mt-2 flex w-[280px] items-center justify-between">
+        <div className="mt-2 flex w-full items-center justify-between">
           <span className="font-semibold">戦績　　　：</span>
           <div className="ml-2 flex items-center">
             <span className="font-mono text-xl">{sumRaceResult().total}</span>

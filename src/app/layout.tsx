@@ -45,7 +45,7 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
       <body className={`min-h-[100vh] bg-slate-50`}>
         <div id="modal" />
         <Header />
-        <main className="px-5 pt-2">{children}</main>
+        <main className="mx-auto max-w-3xl px-5 pt-2">{children}</main>
       </body>
     </html>
   );

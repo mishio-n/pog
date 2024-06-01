@@ -16,7 +16,7 @@ export const Races: React.FC<Props> = ({ horseWithRacePoint, isDart }) => {
         <span className="text-xl text-transparent text-shadow">&#127942;</span>
         <span className="ml-2 text-lg font-semibold">レース</span>
       </div>
-      <div className="mx-1 mt-2 flex w-[300px] flex-col p-1">
+      <div className="mx-1 mt-2 flex w-full flex-col py-1 pl-1 pr-4">
         {horseWithRacePoint.races.map((race, index) => (
           <div key={race.id}>
             {index !== 0 && <div className="divider mb-1 mt-1" />}
