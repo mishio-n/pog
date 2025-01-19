@@ -74,7 +74,9 @@ export const scrapeRaceData = async (raceId: string) => {
   }
   const prizes = p[0].split(",");
 
-  const registerdHorses = await prisma.horse.findMany({ include: { owners: true } });
+  const registerdHorses = await prisma.horse.findMany({
+    include: { owners: { where: { season: { isActive: true } } } },
+  });
   const targetHorses = registerdHorses.filter(({ name }) => horses.includes(name));
 
   const results = targetHorses.map((horse) => {
