@@ -1,5 +1,5 @@
 import { BreadCrumbs } from "@/components/BreadCrumbs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
 import { Horses } from "./horses";
 import { OddsSwitchProvider } from "./oddsSwitchProvider";

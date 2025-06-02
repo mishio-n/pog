@@ -1,5 +1,5 @@
 import { Header } from "@/components/Header";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 
 import "./globals.css";
 
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 const RootLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ja" data-theme="cupcake">
-      <body className={`min-h-[100vh] bg-slate-50`}>
+      <body className="min-h-[100vh] bg-slate-50">
         <div id="modal" />
         <Header />
         <main className="mx-auto max-w-3xl px-5 pt-2">{children}</main>

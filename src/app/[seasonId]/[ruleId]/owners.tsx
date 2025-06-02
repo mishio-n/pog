@@ -1,7 +1,7 @@
 "use client";
 
 import { range } from "@/lib/range";
-import { type Owner } from "@prisma/client";
+import type { Owner } from "@prisma/client";
 import gsap from "gsap";
 import Link from "next/link";
 import { createRef, useEffect, useRef } from "react";
@@ -19,11 +19,11 @@ export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath }) => {
   // カウントアップアニメーション
   useEffect(() => {
     const firstPoint = Math.max(
-      ...pointRefs.current.map((pointRef) => Math.abs(+pointRef.current?.dataset.point!))
+      ...pointRefs.current.map((pointRef) => Math.abs(+(pointRef.current?.dataset.point ?? "0")))
     );
-    pointRefs.current.forEach((pointRef) => {
-      const point = +pointRef.current?.dataset.point!;
-      let obj = { count: 0 };
+    for (const pointRef of pointRefs.current) {
+      const point = +(pointRef.current?.dataset.point ?? "0");
+      const obj = { count: 0 };
       gsap.to(obj, {
         count: point,
         ease: "power3.inOut",
@@ -37,7 +37,7 @@ export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath }) => {
           pointRef.current.textContent = Math.floor(obj.count).toString();
         },
       });
-    });
+    }
   }, []);
 
   return (

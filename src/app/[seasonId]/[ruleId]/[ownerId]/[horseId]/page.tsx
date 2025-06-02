@@ -1,5 +1,5 @@
 import { BreadCrumbs } from "@/components/BreadCrumbs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
 import { HorseDetail } from "./horseDeatil";
 import { HorseResult } from "./horseResult";
@@ -18,20 +18,20 @@ export async function generateStaticParams() {
   const owners = await prisma.owner.findMany({ include: { horses: true } });
 
   const params: Props["params"][] = [];
-  owners.forEach((o) => {
-    const ownerId = `${o.id}`;
-    const ruleId = `${o.ruleId}`;
-    const seasonId = `${o.seasonId}`;
+  for (const owner of owners) {
+    const ownerId = `${owner.id}`;
+    const ruleId = `${owner.ruleId}`;
+    const seasonId = `${owner.seasonId}`;
 
-    o.horses.forEach((h) => {
+    for (const horse of owner.horses) {
       params.push({
         seasonId,
         ruleId,
         ownerId,
-        horseId: `${h.id}`,
+        horseId: `${horse.id}`,
       });
-    });
-  });
+    }
+  }
 
   return params;
 }

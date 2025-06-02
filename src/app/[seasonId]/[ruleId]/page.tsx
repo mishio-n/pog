@@ -1,5 +1,5 @@
 import { BreadCrumbs } from "@/components/BreadCrumbs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
 import { Owners } from "./owners";
 
@@ -11,15 +11,15 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const seasons = await prisma.season.findMany();
+  const seasons = await prisma.season.findMany({ where: { isActive: true } });
   const rules = await prisma.rule.findMany();
 
   const params: { seasonId: string; ruleId: string }[] = [];
-  seasons.forEach((s) => {
-    rules.forEach((r) => {
-      params.push({ seasonId: `${s.id}`, ruleId: `${r.id}` });
-    });
-  });
+  for (const season of seasons) {
+    for (const rule of rules) {
+      params.push({ seasonId: `${season.id}`, ruleId: `${rule.id}` });
+    }
+  }
   return params;
 }
 
