@@ -1,7 +1,7 @@
 "use client";
 
 import { styled } from "@kuma-ui/core";
-import { Race } from "@prisma/client";
+import type { Race } from "@prisma/client";
 import Link from "next/link";
 import { match } from "ts-pattern";
 
@@ -41,9 +41,9 @@ const ResultShineBadge = styled("div")`
 
 export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
   const resultBgColor = match(race.result)
-    .with(1, () => `bg-[#f7ef8e]`)
-    .with(2, () => `bg-[#e1e7ef]`)
-    .with(3, () => `bg-[#eaac6e]`)
+    .with(1, () => "bg-[#f7ef8e]")
+    .with(2, () => "bg-[#e1e7ef]")
+    .with(3, () => "bg-[#eaac6e]")
     .otherwise(() => "");
 
   const coefficient = isDart && race.course === "TURF" ? -1 : 1;
@@ -52,7 +52,7 @@ export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
     <div className="flex items-center justify-between">
       <div className="flex items-center">
         {race.result > 3 ? (
-          <div className={`relative flex h-12 w-12 items-end justify-center rounded-full p-2`}>
+          <div className="relative flex h-12 w-12 items-end justify-center rounded-full p-2">
             <span className="font-mono text-2xl">{race.result}</span>
             <span className="text-sm">着</span>
           </div>

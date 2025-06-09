@@ -1,6 +1,6 @@
 "use client";
 
-import { aggregateRacePoint } from "@/logic/race-point";
+import type { aggregateRacePoint } from "@/logic/race-point";
 import type { Horse, Race } from "@prisma/client";
 import { useCallback } from "react";
 import { useOddsSwitch } from "./oddsSwitchProvider";
@@ -22,7 +22,7 @@ export const OwnerResult: React.FC<Props> = ({ horsesWithRacePoint }) => {
   );
 
   const sumRaceResult = useCallback(() => {
-    const races = horsesWithRacePoint.map((horse) => horse.races).flat();
+    const races = horsesWithRacePoint.flatMap((horse) => horse.races);
     const firstResults = races.filter((race) => race.result === 1);
     return {
       first: firstResults.length,
@@ -48,7 +48,7 @@ export const OwnerResult: React.FC<Props> = ({ horsesWithRacePoint }) => {
       <div className="mx-2 flex flex-col p-1 ">
         <div className="mt-2 flex w-full items-center justify-between">
           <span className="font-semibold">合計　　　：</span>
-          <div className="ml-2 flex items-center"></div>
+          <div className="ml-2 flex items-center" />
           <div>
             <span className="font-mono text-xl">{sumPoint()}</span>
             <span className="ml-2">ポイント</span>

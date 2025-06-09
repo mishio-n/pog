@@ -40,3 +40,4 @@ tsconfig.node.json
 2023-*
 insert.mts
 *.csv
+*.sql

@@ -1,4 +1,4 @@
-import { NextApiHandler } from "next";
+import type { NextApiHandler } from "next";
 
 const revalidate: NextApiHandler = async (req, res) => {
   if (req.method !== "POST") {

@@ -66,13 +66,13 @@ model Owner {
 model Horse {
   id             Int            @id @default(autoincrement())
   name           String
-  races           Race[]
+  races          Race[]
   url            String
   genderCategory GenderCategory
   stable         String
   region         Region
   owners         Owner[]
-  inStable       Boolean        @default(false)
+  uniqueRate     Float          @default(1.0)
 }
 
 model Race {

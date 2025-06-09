@@ -1,4 +1,4 @@
-import { aggregateRacePoint } from "@/logic/race-point";
+import type { aggregateRacePoint } from "@/logic/race-point";
 import type { Horse, Race } from "@prisma/client";
 import { RaceItem } from "./raceItem";
 

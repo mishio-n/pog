@@ -1,6 +1,6 @@
 "use client";
 
-import { aggregateRacePoint } from "@/logic/race-point";
+import type { aggregateRacePoint } from "@/logic/race-point";
 import type { Horse, Race } from "@prisma/client";
 import Link from "next/link";
 import { useOddsSwitch } from "./oddsSwitchProvider";

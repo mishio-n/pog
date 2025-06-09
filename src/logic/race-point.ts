@@ -1,4 +1,4 @@
-import { type Race } from "@prisma/client";
+import type { Race } from "@prisma/client";
 
 export type RacePoint = {
   totalPoint: number;
