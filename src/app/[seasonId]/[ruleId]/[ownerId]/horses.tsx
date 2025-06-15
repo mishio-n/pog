@@ -49,9 +49,6 @@ export const Horses: React.FC<Props> = ({ horsesWithRacePoint, basePath }) => {
                   className={`font-black ${
                     horse.genderCategory === "MALE" ? "text-primary" : "text-secondary"
                   } pl-3`}
-                  // className={`${horse.inStable ? "font-black" : "font-thin"} ${
-                  //   horse.genderCategory === "MALE" ? "text-primary" : "text-secondary"
-                  // } pl-3`}
                 >
                   {horse.name}
                 </span>

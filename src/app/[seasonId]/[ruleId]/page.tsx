@@ -45,9 +45,11 @@ const OwnersPage = async ({ params }: Props) => {
     .map((owner) => ({
       ...owner,
       totalPoint: owner.horses.reduce(
-        (result, horse) => result + aggregateRacePoint(horse.races, rule.isDart).totalPoint,
+        (result, horse) =>
+          result + aggregateRacePoint(horse.races, rule.isDart, horse.duplicateCount).totalPoint,
         0
       ),
+      totalDuplicateCount: owner.horses.reduce((result, horse) => result + horse.duplicateCount, 0),
     }))
     .sort((a, b) => b.totalPoint - a.totalPoint);
 
@@ -62,7 +64,11 @@ const OwnersPage = async ({ params }: Props) => {
         ]}
       />
       <div className="artboard flex flex-col gap-2">
-        <Owners ownerWithPoints={ownerWithPoints} basePath={`/${season.id}/${rule.id}`} />
+        <Owners
+          ownerWithPoints={ownerWithPoints}
+          basePath={`/${season.id}/${rule.id}`}
+          isDuplicate={rule.isDuplicate}
+        />
       </div>
     </div>
   );

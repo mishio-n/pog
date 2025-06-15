@@ -7,11 +7,12 @@ import Link from "next/link";
 import { createRef, useEffect, useRef } from "react";
 
 type Props = {
-  ownerWithPoints: (Owner & { totalPoint: number })[];
+  ownerWithPoints: (Owner & { totalPoint: number; totalDuplicateCount: number })[];
   basePath: string;
+  isDuplicate: boolean;
 };
 
-export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath }) => {
+export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath, isDuplicate }) => {
   const pointRefs = useRef(
     range(0, ownerWithPoints.length - 1).map(() => createRef<HTMLSpanElement>())
   );
@@ -54,15 +55,25 @@ export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath }) => {
             }`}
           >
             <div className="card-title">{owner.name}</div>
-            <div className="">
-              <span
-                className="point font-mono text-xl font-bold"
-                data-point={owner.totalPoint}
-                ref={pointRefs.current[i]}
-              >
-                {owner.totalPoint}
-              </span>
-              <span className="ml-2">ポイント</span>
+            <div className="flex flex-row items-center gap-2">
+              <div>
+                <span
+                  className="point font-mono text-xl font-bold"
+                  data-point={owner.totalPoint}
+                  ref={pointRefs.current[i]}
+                >
+                  {owner.totalPoint}
+                </span>
+                <span className="ml-2">ポイント</span>
+              </div>
+              {isDuplicate && (
+                <div>
+                  <span className="point font-mono text-xl font-bold">
+                    {owner.totalDuplicateCount}
+                  </span>
+                  <span className="ml-2">被り</span>
+                </div>
+              )}
             </div>
           </div>
         </Link>

@@ -22,6 +22,9 @@ const theme = [
   {
     strokeColor: "border-orange-200",
   },
+  {
+    strokeColor: "border-purple-200",
+  },
 ];
 
 const Home = async () => {

@@ -35,7 +35,7 @@ export type Horse = {
   genderCategory: GenderCategory;
   stable: string;
   region: Region;
-  uniqueRate: Generated<number>;
+  duplicateCount: Generated<number>;
 };
 export type Owner = {
   id: Generated<number>;
@@ -61,6 +61,7 @@ export type Rule = {
   description: string;
   isOdds: boolean;
   isDart: boolean;
+  isDuplicate: Generated<boolean>;
 };
 export type Season = {
   id: Generated<number>;

@@ -5,6 +5,7 @@ type Props = {
   horseWithRacePoint: Horse & {
     races: Race[];
   } & ReturnType<typeof aggregateRacePoint>;
+  isDuplicate: boolean;
 };
 
 type RaceResults = {
@@ -14,7 +15,8 @@ type RaceResults = {
   other: number;
 };
 
-export const HorseResult: React.FC<Props> = ({ horseWithRacePoint }) => {
+export const HorseResult: React.FC<Props> = ({ horseWithRacePoint, isDuplicate }) => {
+  const duplicateRate = (count: number) => (count === 0 ? 1 : +(1 / count).toFixed(2));
   const raceResults: RaceResults = horseWithRacePoint.races.reduce(
     (result, cuur) => {
       switch (cuur.result) {
@@ -78,6 +80,17 @@ export const HorseResult: React.FC<Props> = ({ horseWithRacePoint }) => {
             <span className="ml-2 font-mono text-xl">{raceResults.other}</span>
           </div>
         </div>
+        {isDuplicate && (
+          <div className="mt-2 flex w-full items-center justify-between">
+            <span className="font-semibold">被り　　　：</span>
+            <div className="ml-2 flex items-baseline">
+              <span className="font-mono text-xl">{horseWithRacePoint.duplicateCount}</span>
+              <span className="ml-2">
+                （{duplicateRate(horseWithRacePoint.duplicateCount)} 倍）
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

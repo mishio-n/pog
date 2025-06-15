@@ -37,7 +37,7 @@ const OwnerPage = async ({ params }: Props) => {
   const horsesWithRacePoint = owner.horses
     .map((horse) => ({
       ...horse,
-      ...aggregateRacePoint(horse.races, rule.isDart),
+      ...aggregateRacePoint(horse.races, rule.isDart, horse.duplicateCount),
     }))
     .sort((a, b) => b.totalPoint - a.totalPoint);
 

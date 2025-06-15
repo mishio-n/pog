@@ -55,7 +55,7 @@ const OwnerPage = async ({ params }: Props) => {
 
   const horseWithRacePoint = {
     ...horse,
-    ...aggregateRacePoint(horse.races, rule.isDart),
+    ...aggregateRacePoint(horse.races, rule.isDart, horse.duplicateCount),
   };
 
   return (
@@ -79,7 +79,7 @@ const OwnerPage = async ({ params }: Props) => {
 
       <div className="artboard flex flex-col">
         <HorseDetail horse={horse} />
-        <HorseResult horseWithRacePoint={horseWithRacePoint} />
+        <HorseResult horseWithRacePoint={horseWithRacePoint} isDuplicate={rule.isDuplicate} />
         <Races horseWithRacePoint={horseWithRacePoint} isDart={rule.isDart} />
       </div>
     </div>

@@ -50,6 +50,7 @@ model Rule {
   description String
   isOdds      Boolean
   isDart      Boolean
+  isDuplicate Boolean @default(false)
   owner       Owner[]
 }
 
@@ -72,7 +73,7 @@ model Horse {
   stable         String
   region         Region
   owners         Owner[]
-  uniqueRate     Float          @default(1.0)
+  duplicateCount Int            @default(0)
 }
 
 model Race {
