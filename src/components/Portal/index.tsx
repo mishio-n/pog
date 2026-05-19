@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { createPortal } from "react-dom";
 
 type Props = {
@@ -8,13 +8,7 @@ type Props = {
 };
 
 export const Portal: React.FC<Props> = ({ children }) => {
-  const ref = useRef<Element | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const portalElement = typeof document === "undefined" ? null : document.querySelector("#modal");
 
-  useEffect(() => {
-    ref.current = document.querySelector<HTMLElement>("#modal");
-    setMounted(true);
-  }, []);
-
-  return mounted && ref.current ? createPortal(<div>{children}</div>, ref.current) : null;
+  return portalElement ? createPortal(<div>{children}</div>, portalElement) : null;
 };

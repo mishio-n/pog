@@ -1,3 +1,92 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+
+@plugin "daisyui";
+
+@layer base {
+	:root,
+	[data-theme="cupcake"] {
+		color-scheme: light;
+		--color-primary: hsl(183 47% 59%);
+		--color-primary-content: hsl(183 20% 13%);
+		--color-secondary: hsl(338 71% 78%);
+		--color-secondary-content: hsl(340 15% 16%);
+		--color-accent: hsl(39 84% 58%);
+		--color-accent-content: hsl(37 41% 13%);
+		--color-neutral: hsl(280 46% 14%);
+		--color-neutral-content: hsl(283 9% 81%);
+		--color-base-100: hsl(24 33% 97%);
+		--color-base-200: hsl(27 22% 92%);
+		--color-base-300: hsl(23 14% 89%);
+		--color-base-content: hsl(280 46% 14%);
+	}
+}
+
+.text-shadow {
+	text-shadow: 0 0 0 #666;
+}
+
+.card-body {
+	padding-top: 2rem;
+	padding-right: 2rem;
+	padding-bottom: 2rem;
+	font-size: 1rem;
+	line-height: 1.5rem;
+}
+
+.card-title {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 1.25rem;
+	font-weight: 600;
+	line-height: 1.75rem;
+}
+
+.label-text {
+	color: var(--color-base-content);
+}
+
+.season-section {
+	padding: 0.5rem 0 0.2rem;
+	margin-bottom: 0.2rem;
+	background-image: linear-gradient(
+		109.6deg,
+		rgb(0 0 30) 11.2%,
+		rgb(128 162 245) 91.1%
+	);
+	background-repeat: no-repeat;
+	background-size: 100% 6px;
+	background-position: bottom;
+	color: #353535;
+	font-size: 26px;
+	font-weight: bold;
+}
+
+.result-shine-badge::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -75%;
+	width: 50%;
+	height: 100%;
+	background: linear-gradient(to right, rgb(255 255 255 / 0%) 0%, rgb(255 255 255 / 30%) 100%);
+	transform: skewX(-25deg);
+	animation: result-shine 4s infinite;
+	pointer-events: none;
+}
+
+@keyframes result-shine {
+	0% {
+		left: -75%;
+	}
+
+	75% {
+		left: -75%;
+	}
+
+	100% {
+		left: 75%;
+	}
+}

@@ -1,6 +1,5 @@
 "use client";
 
-import { styled } from "@kuma-ui/core";
 import type { Race } from "@prisma/client";
 import Link from "next/link";
 import { match } from "ts-pattern";
@@ -9,35 +8,6 @@ type Props = {
   race: Race;
   isDart: boolean;
 };
-
-const ResultShineBadge = styled("div")`
-  ::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -75%;
-    width: 50%;
-    height: 100%;
-    background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 100%);
-    transform: skewX(-25deg);
-  }
-
-  :before {
-    animation: shine 4s infinite;
-  }
-
-  @keyframes shine {
-    0% {
-      left: -75%;
-    }
-    75% {
-      left: -75%;
-    }
-    100% {
-      left: 75%;
-    }
-  }
-`;
 
 export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
   const resultBgColor = match(race.result)
@@ -57,24 +27,24 @@ export const RaceItem: React.FC<Props> = ({ race, isDart }) => {
             <span className="text-sm">着</span>
           </div>
         ) : (
-          <ResultShineBadge
-            className={`relative flex h-12 w-12 items-end justify-center rounded-full p-2 ${resultBgColor}`}
+          <div
+            className={`result-shine-badge relative flex h-12 w-12 items-end justify-center overflow-hidden rounded-full p-2 ${resultBgColor}`}
           >
             <span className="font-mono text-2xl">{race.result}</span>
             <span className="text-sm">着</span>
-          </ResultShineBadge>
+          </div>
         )}
         <Link
           rel="noreferrer"
           target="_blank"
           href={race.url}
-          className="ml-4 flex flex-col gap-[2px]"
+          className="ml-4 flex flex-col gap-0.5"
         >
           <span className="w-32 overflow-hidden text-ellipsis whitespace-nowrap text-xl">
             {race.name}
           </span>
           <div
-            className={`h-[2px] rounded-lg ${
+            className={`h-0.5 rounded-lg ${
               race.course === "TURF" ? "bg-green-300" : "bg-orange-400"
             }`}
           />

@@ -31,7 +31,7 @@ export const BreadCrumbs: React.FC<Props> = ({ paths }) => {
         <li>
           <Link href={"/"}>TOP</Link>
         </li>
-        {subPaths.map((path, i) => (
+        {subPaths.map((path) => (
           <li key={`breadcrumb-${path.slug}`}>
             <Link href={path.slug}>{path.label}</Link>
           </li>

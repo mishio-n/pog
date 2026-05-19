@@ -25,6 +25,9 @@ const theme = [
   {
     strokeColor: "border-purple-200",
   },
+  {
+    strokeColor: "border-purple-200",
+  },
 ];
 
 const Home = async () => {
@@ -33,7 +36,7 @@ const Home = async () => {
 
   return (
     <div className="artboard flex flex-col gap-8">
-      {seasons.map((season, i) => (
+      {seasons.map((season) => (
         <div key={season.id}>
           <SeasonSection name={season.name} />
           {rules.map((rule, j) => (

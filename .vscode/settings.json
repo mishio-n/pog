@@ -16,4 +16,5 @@
     },
   },
   "css.lint.unknownAtRules": "ignore",
+  "mirrord.promptUsingBinary": false,
 }

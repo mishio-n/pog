@@ -4,10 +4,10 @@ import { aggregateRacePoint } from "@/logic/race-point";
 import { Owners } from "./owners";
 
 type Props = {
-  params: {
+  params: Promise<{
     seasonId: string;
     ruleId: string;
-  };
+  }>;
 };
 
 export async function generateStaticParams() {
@@ -24,8 +24,9 @@ export async function generateStaticParams() {
 }
 
 const OwnersPage = async ({ params }: Props) => {
-  const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });
-  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +params.ruleId } });
+  const { seasonId, ruleId } = await params;
+  const season = await prisma.season.findUniqueOrThrow({ where: { id: +seasonId } });
+  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +ruleId } });
   const owners = await prisma.owner.findMany({
     where: {
       ruleId: rule.id,
@@ -58,7 +59,7 @@ const OwnersPage = async ({ params }: Props) => {
       <BreadCrumbs
         paths={[
           {
-            slug: `${params.seasonId}/${params.ruleId}`,
+            slug: `${seasonId}/${ruleId}`,
             label: `${season.name} ・ ${rule.name}`,
           },
         ]}

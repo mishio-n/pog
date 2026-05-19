@@ -2,22 +2,24 @@ import { BreadCrumbs } from "@/components/BreadCrumbs";
 import prisma from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
 import { Horses } from "./horses";
-import { OddsSwitchProvider } from "./oddsSwitchProvider";
 import { OddsSwitcher } from "./oddsSwitcher";
+import { OddsSwitchProvider } from "./oddsSwitchProvider";
 import { OwnerResult } from "./ownerResult";
 
 type Props = {
-  params: {
+  params: Promise<{
     seasonId: string;
     ruleId: string;
     ownerId: string;
-  };
+  }>;
 };
+
+type PageParams = Awaited<Props["params"]>;
 
 export async function generateStaticParams() {
   const owners = await prisma.owner.findMany();
 
-  const params: Props["params"][] = owners.map((o) => ({
+  const params: PageParams[] = owners.map((o) => ({
     ownerId: `${o.id}`,
     ruleId: `${o.ruleId}`,
     seasonId: `${o.seasonId}`,
@@ -27,10 +29,11 @@ export async function generateStaticParams() {
 }
 
 const OwnerPage = async ({ params }: Props) => {
-  const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });
-  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +params.ruleId } });
+  const { seasonId, ruleId, ownerId } = await params;
+  const season = await prisma.season.findUniqueOrThrow({ where: { id: +seasonId } });
+  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +ruleId } });
   const owner = await prisma.owner.findUniqueOrThrow({
-    where: { id: +params.ownerId },
+    where: { id: +ownerId },
     include: { horses: { include: { races: true } } },
   });
 
@@ -46,11 +49,11 @@ const OwnerPage = async ({ params }: Props) => {
       <BreadCrumbs
         paths={[
           {
-            slug: `${params.seasonId}/${params.ruleId}`,
+            slug: `${seasonId}/${ruleId}`,
             label: `${season.name} ・ ${rule.name}`,
           },
           {
-            slug: `${params.ownerId}`,
+            slug: `${ownerId}`,
             label: owner.name,
           },
         ]}

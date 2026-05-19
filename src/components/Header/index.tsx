@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 export const Header: React.FC = () => {
@@ -9,15 +10,15 @@ export const Header: React.FC = () => {
         href={"/"}
         className="inline-flex cursor-pointer items-center justify-center text-center text-xl font-bold normal-case text-white"
       >
-        {
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src="/android-chrome-512x512.png"
-            alt="icon"
-            className="no-animation absolute left-2 top-0 h-[64px] w-[64px]"
-          />
-        }
-        <span className="ml-[68px]">おうちPOG</span>
+        <Image
+          src="/android-chrome-512x512.png"
+          alt="icon"
+          width={64}
+          height={64}
+          className="no-animation absolute left-2 top-0 h-16 w-16"
+          priority
+        />
+        <span className="ml-17">おうちPOG</span>
       </Link>
       {/* {segments.length === 0 && <RaceResultRegisterButton />} */}
     </header>

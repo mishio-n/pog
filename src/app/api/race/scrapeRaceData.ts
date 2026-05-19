@@ -54,11 +54,14 @@ export const scrapeRaceData = async (raceId: string) => {
     throw new Error("date is not found");
   }
 
-  const horses = await page.$$eval(
-    "table.RaceTable01 > tbody > tr > td.Horse_Info > span > a",
-    // biome-ignore lint/style/noNonNullAssertion: 取得できない場合はサイト仕様変更のため落とす
-    (el) => el.map((e) => e.textContent!)
-  );
+  const horses = (
+    await page.$$eval(
+      "table.RaceTable01 > tbody > tr > td.Horse_Info > span > a",
+      // biome-ignore lint/style/noNonNullAssertion: 取得できない場合はサイト仕様変更のため落とす
+      (el) => el.map((e) => e.textContent!)
+    )
+  ).map((name) => name.trim());
+
   const oddsList = await page.$$eval(
     "table.RaceTable01 > tbody > tr > td.Odds.Txt_R > span",
     // biome-ignore lint/style/noNonNullAssertion: 取得できない場合はサイト仕様変更のため落とす

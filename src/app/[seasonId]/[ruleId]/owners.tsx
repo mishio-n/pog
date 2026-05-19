@@ -1,10 +1,9 @@
 "use client";
 
-import { range } from "@/lib/range";
 import type { Owner } from "@prisma/client";
 import gsap from "gsap";
 import Link from "next/link";
-import { createRef, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 type Props = {
   ownerWithPoints: (Owner & { totalPoint: number; totalDuplicateCount: number })[];
@@ -13,17 +12,17 @@ type Props = {
 };
 
 export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath, isDuplicate }) => {
-  const pointRefs = useRef(
-    range(0, ownerWithPoints.length - 1).map(() => createRef<HTMLSpanElement>())
-  );
+  const pointElements = useRef<(HTMLSpanElement | null)[]>([]);
 
   // カウントアップアニメーション
   useEffect(() => {
     const firstPoint = Math.max(
-      ...pointRefs.current.map((pointRef) => Math.abs(+(pointRef.current?.dataset.point ?? "0")))
+      ...pointElements.current.map((pointElement) =>
+        Math.abs(+(pointElement?.dataset.point ?? "0"))
+      )
     );
-    for (const pointRef of pointRefs.current) {
-      const point = +(pointRef.current?.dataset.point ?? "0");
+    for (const pointElement of pointElements.current) {
+      const point = +(pointElement?.dataset.point ?? "0");
       const obj = { count: 0 };
       gsap.to(obj, {
         count: point,
@@ -32,10 +31,10 @@ export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath, isDuplicate
         duration: 3.6 * (Math.abs(point) / firstPoint),
         onUpdate: () => {
           // アニメーション中の画面遷移を考慮
-          if (pointRef.current === null) {
+          if (pointElement === null) {
             return;
           }
-          pointRef.current.textContent = Math.floor(obj.count).toString();
+          pointElement.textContent = Math.floor(obj.count).toString();
         },
       });
     }
@@ -60,7 +59,9 @@ export const Owners: React.FC<Props> = ({ ownerWithPoints, basePath, isDuplicate
                 <span
                   className="point font-mono text-xl font-bold"
                   data-point={owner.totalPoint}
-                  ref={pointRefs.current[i]}
+                  ref={(element) => {
+                    pointElements.current[i] = element;
+                  }}
                 >
                   {owner.totalPoint}
                 </span>

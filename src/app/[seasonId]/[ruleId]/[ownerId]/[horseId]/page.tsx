@@ -6,18 +6,20 @@ import { HorseResult } from "./horseResult";
 import { Races } from "./races";
 
 type Props = {
-  params: {
+  params: Promise<{
     seasonId: string;
     ruleId: string;
     ownerId: string;
     horseId: string;
-  };
+  }>;
 };
+
+type PageParams = Awaited<Props["params"]>;
 
 export async function generateStaticParams() {
   const owners = await prisma.owner.findMany({ include: { horses: true } });
 
-  const params: Props["params"][] = [];
+  const params: PageParams[] = [];
   for (const owner of owners) {
     const ownerId = `${owner.id}`;
     const ruleId = `${owner.ruleId}`;
@@ -37,13 +39,14 @@ export async function generateStaticParams() {
 }
 
 const OwnerPage = async ({ params }: Props) => {
-  const season = await prisma.season.findUniqueOrThrow({ where: { id: +params.seasonId } });
-  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +params.ruleId } });
+  const { seasonId, ruleId, ownerId, horseId } = await params;
+  const season = await prisma.season.findUniqueOrThrow({ where: { id: +seasonId } });
+  const rule = await prisma.rule.findUniqueOrThrow({ where: { id: +ruleId } });
   const owner = await prisma.owner.findUniqueOrThrow({
-    where: { id: +params.ownerId },
+    where: { id: +ownerId },
   });
   const horse = await prisma.horse.findUniqueOrThrow({
-    where: { id: +params.horseId },
+    where: { id: +horseId },
     include: {
       races: {
         orderBy: {
@@ -63,15 +66,15 @@ const OwnerPage = async ({ params }: Props) => {
       <BreadCrumbs
         paths={[
           {
-            slug: `${params.seasonId}/${params.ruleId}`,
+            slug: `${seasonId}/${ruleId}`,
             label: `${season.name} ・ ${rule.name}`,
           },
           {
-            slug: `${params.ownerId}`,
+            slug: `${ownerId}`,
             label: owner.name,
           },
           {
-            slug: `${params.horseId}`,
+            slug: `${horseId}`,
             label: horse.name,
           },
         ]}
