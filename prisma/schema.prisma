@@ -67,6 +67,7 @@ model Horse {
   id             Int            @id @default(autoincrement())
   name           String
   races          Race[]
+  raceSchedules  RaceSchedule[]
   url            String
   genderCategory GenderCategory
   stable         String
@@ -87,4 +88,23 @@ model Race {
   url     String
   course  Course
   grade   Grade
+}
+
+model RaceSchedule {
+  id           Int      @id @default(autoincrement())
+  horseId      Int
+  horse        Horse    @relation(fields: [horseId], references: [id])
+  raceId       String
+  date         String
+  venue        String
+  raceNumber   Int
+  raceName     String
+  startTime    String?
+  courseText   String?
+  distanceText String?
+  url          String
+  weekStart    String
+  fetchedAt    DateTime @default(now())
+
+  @@unique([weekStart, horseId, date, venue, raceNumber])
 }

@@ -55,6 +55,21 @@ export type Race = {
   course: Course;
   grade: Grade;
 };
+export type RaceSchedule = {
+  id: Generated<number>;
+  horseId: number;
+  raceId: string;
+  date: string;
+  venue: string;
+  raceNumber: number;
+  raceName: string;
+  startTime: string | null;
+  courseText: string | null;
+  distanceText: string | null;
+  url: string;
+  weekStart: string;
+  fetchedAt: Generated<Timestamp>;
+};
 export type Rule = {
   id: Generated<number>;
   name: string;
@@ -72,6 +87,7 @@ export type DB = {
   Horse: Horse;
   Owner: Owner;
   Race: Race;
+  RaceSchedule: RaceSchedule;
   Rule: Rule;
   Season: Season;
 };
