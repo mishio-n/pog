@@ -1,4 +1,5 @@
 import { Header } from "@/components/Header";
+import { RaceScheduleSummaryProvider } from "@/components/RaceScheduleSummaryProvider";
 import type { Metadata } from "next";
 
 import "./globals.css";
@@ -47,7 +48,9 @@ const RootLayout = async ({ children }: { children: React.ReactNode }) => {
     <html lang="ja" data-theme="cupcake">
       <body className="min-h-screen bg-slate-50">
         <div id="modal" />
-        <Header />
+        <RaceScheduleSummaryProvider>
+          <Header />
+        </RaceScheduleSummaryProvider>
         <main className="mx-auto max-w-3xl px-5 pt-2">{children}</main>
       </body>
     </html>

@@ -1,4 +1,9 @@
 import * as cheerio from "cheerio";
+import {
+  addRaceScheduleDays,
+  formatRaceScheduleDate,
+  getCurrentRaceScheduleWeek,
+} from "../src/lib/raceScheduleWeek";
 
 type RaceListItem = {
   raceId: string;
@@ -35,43 +40,6 @@ const NETKEIBA_RACE_BASE_URL = "https://race.netkeiba.com";
 const REQUEST_INTERVAL_MS = 500;
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-const formatDate = (date: Date) => {
-  const year = date.getUTCFullYear();
-  const month = `${date.getUTCMonth() + 1}`.padStart(2, "0");
-  const day = `${date.getUTCDate()}`.padStart(2, "0");
-  return `${year}${month}${day}`;
-};
-
-const addDays = (date: Date, days: number) => {
-  const result = new Date(date);
-  result.setUTCDate(result.getUTCDate() + days);
-  return result;
-};
-
-const getTokyoDate = (date = new Date()) => {
-  const parts = new Intl.DateTimeFormat("en-US", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-
-  const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return new Date(Date.UTC(+values.year, +values.month - 1, +values.day));
-};
-
-const getTargetDates = (date = new Date()) => {
-  const today = getTokyoDate(date);
-  const day = today.getUTCDay();
-  const mondayBasedDay = day === 0 ? 6 : day - 1;
-  const friday = addDays(today, 4 - mondayBasedDay);
-
-  return {
-    weekStart: formatDate(friday),
-    dates: [0, 1, 2, 3].map((offset) => formatDate(addDays(friday, offset))),
-  };
-};
 
 const parseCsvOption = (value: string | undefined) => {
   return value
@@ -259,11 +227,13 @@ const getDatesFromOptions = (options: CliOptions) => {
 
     return {
       weekStart: options.weekStart,
-      dates: [0, 1, 2, 3].map((offset) => formatDate(addDays(startDate, offset))),
+      dates: [0, 1, 2, 3].map((offset) =>
+        formatRaceScheduleDate(addRaceScheduleDays(startDate, offset))
+      ),
     };
   }
 
-  return getTargetDates();
+  return getCurrentRaceScheduleWeek();
 };
 
 const getDryRunHorses = (horseExternalIds: string[]): TargetHorse[] => {
