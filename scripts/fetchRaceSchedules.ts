@@ -19,6 +19,7 @@ type RaceListItem = {
 
 type RaceScheduleInput = RaceListItem & {
   horseId: number;
+  horseNumber: number | null;
   weekStart: string;
 };
 
@@ -190,20 +191,30 @@ const fetchRaceList = async (date: string) => {
   return parseRaceList(html, date);
 };
 
+type RaceEntry = {
+  horseExternalId: string;
+  horseNumber: number | null;
+};
+
 const parseRaceEntries = (html: string) => {
   const $ = cheerio.load(html);
-  const horseExternalIds: string[] = [];
+  const entries: RaceEntry[] = [];
 
   $("table.ShutubaTable tr.HorseList").each((_, row) => {
     const horseUrl = $(row).find("td.HorseInfo span.HorseName a").first().attr("href");
     const horseExternalId = extractHorseExternalId(horseUrl);
+    const horseNumberText = normalizeText($(row).find("td[class^='Umaban']").first().text());
+    const horseNumber = Number.parseInt(horseNumberText, 10);
 
     if (horseExternalId) {
-      horseExternalIds.push(horseExternalId);
+      entries.push({
+        horseExternalId,
+        horseNumber: Number.isNaN(horseNumber) ? null : horseNumber,
+      });
     }
   });
 
-  return horseExternalIds;
+  return entries;
 };
 
 const fetchRaceEntries = async (race: RaceListItem) => {
@@ -305,16 +316,17 @@ const main = async () => {
 
   for (const race of targetRaces) {
     try {
-      const horseExternalIds = await fetchRaceEntries(race);
-      const matchedHorses = horseExternalIds.flatMap((externalId) => {
-        const horse = horseByExternalId.get(externalId);
-        return horse ? [horse] : [];
+      const raceEntries = await fetchRaceEntries(race);
+      const matchedEntries = raceEntries.flatMap((entry) => {
+        const horse = horseByExternalId.get(entry.horseExternalId);
+        return horse ? [{ horse, horseNumber: entry.horseNumber }] : [];
       });
 
-      for (const horse of matchedHorses) {
+      for (const { horse, horseNumber } of matchedEntries) {
         schedules.push({
           ...race,
           horseId: horse.id,
+          horseNumber,
           weekStart,
         });
         console.log(
@@ -350,6 +362,7 @@ const main = async () => {
             venue: schedule.venue,
             raceNumber: schedule.raceNumber,
             raceName: schedule.raceName,
+            horseNumber: schedule.horseNumber,
             startTime: schedule.startTime,
             courseText: schedule.courseText,
             distanceText: schedule.distanceText,

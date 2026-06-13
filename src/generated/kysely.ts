@@ -63,12 +63,17 @@ export type RaceSchedule = {
   venue: string;
   raceNumber: number;
   raceName: string;
+  horseNumber: number | null;
   startTime: string | null;
   courseText: string | null;
   distanceText: string | null;
   url: string;
   weekStart: string;
   fetchedAt: Generated<Timestamp>;
+  odds: number | null;
+  popularity: number | null;
+  oddsFetchedAt: Timestamp | null;
+  oddsOfficialAt: Timestamp | null;
 };
 export type Rule = {
   id: Generated<number>;

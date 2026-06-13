@@ -99,12 +99,17 @@ model RaceSchedule {
   venue        String
   raceNumber   Int
   raceName     String
+  horseNumber  Int?
   startTime    String?
   courseText   String?
   distanceText String?
   url          String
   weekStart    String
   fetchedAt    DateTime @default(now())
+  odds         Float?
+  popularity   Int?
+  oddsFetchedAt  DateTime?
+  oddsOfficialAt DateTime?
 
   @@unique([weekStart, horseId, date, venue, raceNumber])
 }

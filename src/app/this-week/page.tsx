@@ -1,13 +1,98 @@
 import prisma from "@/lib/prisma";
 import { getCurrentRaceScheduleWeek } from "@/lib/raceScheduleWeek";
+import { Bomb } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 1800;
 
 const formatDisplayDate = (date: string) => {
   const year = date.slice(0, 4);
   const month = date.slice(4, 6);
   const day = date.slice(6, 8);
   return `${year}/${month}/${day}`;
+};
+
+const getOddsAlertLevel = (odds: number | null) => {
+  if (odds === null) {
+    return null;
+  }
+
+  if (odds >= 100) {
+    return "large";
+  }
+
+  if (odds >= 50) {
+    return "medium";
+  }
+
+  if (odds >= 20) {
+    return "small";
+  }
+
+  return null;
+};
+
+const getRaceOddsAlertLevel = (schedules: { odds: number | null }[]) => {
+  const levels = schedules.map((schedule) => getOddsAlertLevel(schedule.odds));
+
+  if (levels.includes("large")) {
+    return "large";
+  }
+
+  if (levels.includes("medium")) {
+    return "medium";
+  }
+
+  if (levels.includes("small")) {
+    return "small";
+  }
+
+  return null;
+};
+
+const getCardClassName = ({
+  oddsAlertLevel,
+  hasDartRuleWarning,
+}: {
+  oddsAlertLevel: "small" | "medium" | "large" | null;
+  hasDartRuleWarning: boolean;
+}) => {
+  if (oddsAlertLevel === "large") {
+    return "border-red-400 bg-red-100";
+  }
+
+  if (oddsAlertLevel === "medium") {
+    return "border-orange-400 bg-orange-100";
+  }
+
+  if (oddsAlertLevel === "small") {
+    return "border-warning bg-warning/10";
+  }
+
+  if (hasDartRuleWarning) {
+    return "border-warning bg-warning/10";
+  }
+
+  return "border-base-300 bg-base-100";
+};
+
+const formatOdds = (odds: number) => {
+  return odds.toFixed(1);
+};
+
+const getOddsBombCount = (oddsAlertLevel: "small" | "medium" | "large" | null) => {
+  if (oddsAlertLevel === "large") {
+    return 3;
+  }
+
+  if (oddsAlertLevel === "medium") {
+    return 2;
+  }
+
+  if (oddsAlertLevel === "small") {
+    return 1;
+  }
+
+  return 0;
 };
 
 const RaceSchedulesPage = async () => {
@@ -78,12 +163,13 @@ const RaceSchedulesPage = async () => {
           今週の出走予定はありません。
         </div>
       ) : (
-        <div className="mx-2 flex flex-col gap-3">
+        <div className="mx-2 mb-10 flex flex-col gap-3">
           {scheduleGroups.map(({ race, schedules }) => {
             const isTurfRace = race.courseText?.includes("芝") ?? false;
             const hasDartRuleWarning = schedules.some((schedule) =>
               schedule.horse.owners.some((owner) => owner.rule.isDart && isTurfRace)
             );
+            const oddsAlertLevel = getRaceOddsAlertLevel(schedules);
 
             return (
               <a
@@ -91,9 +177,10 @@ const RaceSchedulesPage = async () => {
                 href={race.url}
                 target="_blank"
                 rel="noreferrer"
-                className={`bg-base-100 block rounded border p-3 shadow-sm ${
-                  hasDartRuleWarning ? "border-warning bg-warning/10" : "border-base-300"
-                }`}
+                className={`block rounded border p-3 shadow-sm ${getCardClassName({
+                  oddsAlertLevel,
+                  hasDartRuleWarning,
+                })}`}
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
@@ -118,21 +205,56 @@ const RaceSchedulesPage = async () => {
                     const ownerLabels = schedule.horse.owners.map(
                       (owner) => `${owner.name}（${owner.season.name}・${owner.rule.name}）`
                     );
+                    const oddsAlertLevel = getOddsAlertLevel(schedule.odds);
 
                     return (
                       <div key={schedule.id}>
-                        <div
-                          className={`font-black ${
-                            schedule.horse.genderCategory === "MALE"
-                              ? "text-primary"
-                              : "text-secondary"
-                          }`}
-                        >
-                          {schedule.horse.name}
+                        <div className="flex items-center gap-2">
+                          <div
+                            className={`font-black ${
+                              schedule.horse.genderCategory === "MALE"
+                                ? "text-primary"
+                                : "text-secondary"
+                            }`}
+                          >
+                            {schedule.horse.name}
+                          </div>
+                          {getOddsBombCount(oddsAlertLevel) > 0 && (
+                            <span className="inline-flex shrink-0 items-center gap-0.5 text-slate-500">
+                              {Array.from({ length: getOddsBombCount(oddsAlertLevel) }).map(
+                                (_, index) => (
+                                  <span key={index} className="relative inline-flex">
+                                    <Bomb
+                                      size={14}
+                                      fill="currentColor"
+                                      strokeWidth={1.8}
+                                      aria-hidden="true"
+                                    />
+                                    <span
+                                      className="absolute -right-1.5 -top-1 h-2 w-2 bg-orange-400 shadow-[0_0_5px_rgba(251,146,60,0.95)] ring-1 ring-amber-200 [clip-path:polygon(50%_0%,61%_32%,95%_20%,70%_50%,95%_80%,61%_68%,50%_100%,39%_68%,5%_80%,30%_50%,5%_20%,39%_32%)]"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                )
+                              )}
+                            </span>
+                          )}
                         </div>
                         {ownerLabels.length > 0 && (
                           <div className="text-base-content/70 mt-1 text-sm">
                             {ownerLabels.join(" / ")}
+                          </div>
+                        )}
+                        {schedule.odds !== null && (
+                          <div
+                            className={`mt-1 text-sm ${
+                              oddsAlertLevel ? "font-semibold text-error" : "text-base-content/70"
+                            }`}
+                          >
+                            {formatOdds(schedule.odds)}倍
+                            {schedule.popularity !== null && (
+                              <span className="ml-2">{schedule.popularity}人気</span>
+                            )}
                           </div>
                         )}
                       </div>
