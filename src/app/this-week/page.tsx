@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { getCurrentRaceScheduleWeek } from "@/lib/raceScheduleWeek";
 import { Bomb } from "lucide-react";
+import { Fragment } from "react";
 
 export const revalidate = 1800;
 
@@ -130,7 +131,7 @@ const RaceSchedulesPage = async () => {
         },
       },
     },
-    orderBy: [{ date: "asc" }, { venue: "asc" }, { raceNumber: "asc" }],
+    orderBy: [{ date: "asc" }, { startTime: "asc" }, { raceNumber: "asc" }],
   });
 
   const scheduleGroups = Array.from(
@@ -150,7 +151,19 @@ const RaceSchedulesPage = async () => {
         return groups;
       }, new Map<string, { race: (typeof schedules)[number]; schedules: typeof schedules }>())
       .values()
-  );
+  ).sort((a, b) => {
+    const dateDiff = a.race.date.localeCompare(b.race.date);
+    if (dateDiff !== 0) {
+      return dateDiff;
+    }
+
+    const timeDiff = (a.race.startTime ?? "99:99").localeCompare(b.race.startTime ?? "99:99");
+    if (timeDiff !== 0) {
+      return timeDiff;
+    }
+
+    return a.race.raceNumber - b.race.raceNumber;
+  });
 
   return (
     <div className="artboard flex flex-col gap-4">
@@ -164,104 +177,111 @@ const RaceSchedulesPage = async () => {
         </div>
       ) : (
         <div className="mx-2 mb-10 flex flex-col gap-3">
-          {scheduleGroups.map(({ race, schedules }) => {
+          {scheduleGroups.map(({ race, schedules }, index) => {
             const isTurfRace = race.courseText?.includes("芝") ?? false;
             const hasDartRuleWarning = schedules.some((schedule) =>
               schedule.horse.owners.some((owner) => owner.rule.isDart && isTurfRace)
             );
             const oddsAlertLevel = getRaceOddsAlertLevel(schedules);
+            const shouldShowDateHeading = scheduleGroups[index - 1]?.race.date !== race.date;
 
             return (
-              <a
-                key={race.raceId}
-                href={race.url}
-                target="_blank"
-                rel="noreferrer"
-                className={`block rounded border p-3 shadow-sm ${getCardClassName({
-                  oddsAlertLevel,
-                  hasDartRuleWarning,
-                })}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-base-content/70 text-sm">
-                      {formatDisplayDate(race.date)} {race.venue} {race.raceNumber}R
-                      {race.startTime && <span className="ml-2">{race.startTime}</span>}
+              <Fragment key={race.raceId}>
+                {shouldShowDateHeading && (
+                  <div className="text-base-content/60 mt-2 border-b border-base-300 pb-1 text-sm font-semibold">
+                    {formatDisplayDate(race.date)}
+                  </div>
+                )}
+                <a
+                  href={race.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={`block rounded border p-3 shadow-sm ${getCardClassName({
+                    oddsAlertLevel,
+                    hasDartRuleWarning,
+                  })}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-base-content/70 text-sm">
+                        {race.startTime && <span className="mr-2">{race.startTime}</span>}
+                        {race.venue} {race.raceNumber}R
+                      </div>
+                      <div className="mt-1 font-semibold">{race.raceName}</div>
+                      <div className="mt-1 text-sm">
+                        {[race.courseText, race.distanceText].filter(Boolean).join("")}
+                      </div>
                     </div>
-                    <div className="mt-1 font-semibold">{race.raceName}</div>
-                    <div className="mt-1 text-sm">
-                      {[race.courseText, race.distanceText].filter(Boolean).join("")}
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      {hasDartRuleWarning && (
+                        <div className="badge badge-warning whitespace-nowrap">ダート注意</div>
+                      )}
                     </div>
                   </div>
-                  <div className="flex shrink-0 flex-col items-end gap-1">
-                    {hasDartRuleWarning && (
-                      <div className="badge badge-warning whitespace-nowrap">ダート注意</div>
-                    )}
-                  </div>
-                </div>
 
-                <div className="border-base-300 mt-3 flex flex-col gap-2 border-t pt-3">
-                  {schedules.map((schedule) => {
-                    const ownerLabels = schedule.horse.owners.map(
-                      (owner) => `${owner.name}（${owner.season.name}・${owner.rule.name}）`
-                    );
-                    const oddsAlertLevel = getOddsAlertLevel(schedule.odds);
+                  <div className="border-base-300 mt-3 flex flex-col gap-2 border-t pt-3">
+                    {schedules.map((schedule) => {
+                      const ownerLabels = schedule.horse.owners.map(
+                        (owner) => `${owner.name}（${owner.season.name}・${owner.rule.name}）`
+                      );
+                      const oddsAlertLevel = getOddsAlertLevel(schedule.odds);
 
-                    return (
-                      <div key={schedule.id}>
-                        <div className="flex items-center gap-2">
-                          <div
-                            className={`font-black ${
-                              schedule.horse.genderCategory === "MALE"
-                                ? "text-primary"
-                                : "text-secondary"
-                            }`}
-                          >
-                            {schedule.horse.name}
-                          </div>
-                          {getOddsBombCount(oddsAlertLevel) > 0 && (
-                            <span className="inline-flex shrink-0 items-center gap-0.5 text-slate-500">
-                              {Array.from({ length: getOddsBombCount(oddsAlertLevel) }).map(
-                                (_, index) => (
-                                  <span key={index} className="relative inline-flex">
-                                    <Bomb
-                                      size={14}
-                                      fill="currentColor"
-                                      strokeWidth={1.8}
-                                      aria-hidden="true"
-                                    />
-                                    <span
-                                      className="absolute -right-1.5 -top-1 h-2 w-2 bg-orange-400 shadow-[0_0_5px_rgba(251,146,60,0.95)] ring-1 ring-amber-200 [clip-path:polygon(50%_0%,61%_32%,95%_20%,70%_50%,95%_80%,61%_68%,50%_100%,39%_68%,5%_80%,30%_50%,5%_20%,39%_32%)]"
-                                      aria-hidden="true"
-                                    />
-                                  </span>
-                                )
-                              )}
-                            </span>
-                          )}
-                        </div>
-                        {ownerLabels.length > 0 && (
-                          <div className="text-base-content/70 mt-1 text-sm">
-                            {ownerLabels.join(" / ")}
-                          </div>
-                        )}
-                        {schedule.odds !== null && (
-                          <div
-                            className={`mt-1 text-sm ${
-                              oddsAlertLevel ? "font-semibold text-error" : "text-base-content/70"
-                            }`}
-                          >
-                            {formatOdds(schedule.odds)}倍
-                            {schedule.popularity !== null && (
-                              <span className="ml-2">{schedule.popularity}人気</span>
+                      return (
+                        <div key={schedule.id}>
+                          <div className="flex items-center gap-2">
+                            <div
+                              className={`font-black ${
+                                schedule.horse.genderCategory === "MALE"
+                                  ? "text-primary"
+                                  : "text-secondary"
+                              }`}
+                            >
+                              {schedule.horse.name}
+                            </div>
+                            {getOddsBombCount(oddsAlertLevel) > 0 && (
+                              <span className="inline-flex shrink-0 items-center gap-0.5 text-slate-500">
+                                {Array.from({ length: getOddsBombCount(oddsAlertLevel) }).map(
+                                  (_, index) => (
+                                    <span key={index} className="relative inline-flex">
+                                      <Bomb
+                                        size={14}
+                                        fill="currentColor"
+                                        strokeWidth={1.8}
+                                        aria-hidden="true"
+                                      />
+                                      <span
+                                        className="absolute -right-1.5 -top-1 h-2 w-2 bg-orange-400 shadow-[0_0_5px_rgba(251,146,60,0.95)] ring-1 ring-amber-200 [clip-path:polygon(50%_0%,61%_32%,95%_20%,70%_50%,95%_80%,61%_68%,50%_100%,39%_68%,5%_80%,30%_50%,5%_20%,39%_32%)]"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                  )
+                                )}
+                              </span>
                             )}
                           </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              </a>
+                          {ownerLabels.length > 0 && (
+                            <div className="text-base-content/70 mt-1 text-sm">
+                              {ownerLabels.join(" / ")}
+                            </div>
+                          )}
+                          {schedule.odds !== null && (
+                            <div
+                              className={`mt-1 text-sm ${
+                                oddsAlertLevel ? "font-semibold text-error" : "text-base-content/70"
+                              }`}
+                            >
+                              {formatOdds(schedule.odds)}倍
+                              {schedule.popularity !== null && (
+                                <span className="ml-2">{schedule.popularity}人気</span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </a>
+              </Fragment>
             );
           })}
         </div>
