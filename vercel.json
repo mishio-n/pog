@@ -1,15 +1,4 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/revalidate",
-      "destination": "/pages/api/revalidate"
-    }
-  ],
-  "functions":{
-    "pages/api/revalidate" : {
-      "includeFiles": "assets/*"
-    }
-  },
   "headers": [
     {
       "source": "/api/revalidate",

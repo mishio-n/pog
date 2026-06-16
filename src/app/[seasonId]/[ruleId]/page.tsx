@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { aggregateRacePoint } from "@/logic/race-point";
 import { Owners } from "./owners";
 
+export const revalidate = 86400;
+
 type Props = {
   params: Promise<{
     seasonId: string;

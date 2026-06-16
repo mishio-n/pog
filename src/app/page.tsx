@@ -2,6 +2,8 @@ import { MenuCard } from "@/app/menuCard";
 import { SeasonSection } from "@/app/seasonSection";
 import { kysely } from "@/lib/kysely";
 
+export const revalidate = 86400;
+
 const getSeasons = async () => {
   return kysely
     .selectFrom("Season")

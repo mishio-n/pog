@@ -5,6 +5,8 @@ import { HorseDetail } from "./horseDeatil";
 import { HorseResult } from "./horseResult";
 import { Races } from "./races";
 
+export const revalidate = 86400;
+
 type Props = {
   params: Promise<{
     seasonId: string;

@@ -6,6 +6,8 @@ import { OddsSwitcher } from "./oddsSwitcher";
 import { OddsSwitchProvider } from "./oddsSwitchProvider";
 import { OwnerResult } from "./ownerResult";
 
+export const revalidate = 86400;
+
 type Props = {
   params: Promise<{
     seasonId: string;
