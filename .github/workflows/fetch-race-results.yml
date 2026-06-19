@@ -1,0 +1,46 @@
+name: Fetch race results
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Run even outside the regular result update window"
+        required: false
+        type: boolean
+        default: false
+  schedule:
+    # 10:00-18:00 Saturday/Sunday in Asia/Tokyo.
+    - cron: "0 1-9 * * 6,0"
+
+jobs:
+  fetch-race-results:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      APP_URL: ${{ vars.APP_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      REVALIDATE_SECRET: ${{ secrets.REVALIDATE_SECRET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npx prisma generate
+
+      - name: Fetch race results
+        run: |
+          if [ "${{ github.event.inputs.force }}" = "true" ]; then
+            npm run fetch:race-results -- --force
+          else
+            npm run fetch:race-results
+          fi

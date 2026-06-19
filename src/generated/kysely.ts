@@ -45,6 +45,7 @@ export type Owner = {
 };
 export type Race = {
   id: Generated<number>;
+  raceId: string | null;
   name: string;
   odds: number;
   point: number;

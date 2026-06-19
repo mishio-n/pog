@@ -12,8 +12,25 @@ export async function POST(request: NextRequest) {
   try {
     const results = await scrapeRaceData(raceId);
     for (const result of results) {
-      await prisma.race.create({
-        data: {
+      await prisma.race.upsert({
+        where: {
+          horseId_raceId: {
+            horseId: result.horse.id,
+            raceId: result.raceId,
+          },
+        },
+        update: {
+          name: result.name,
+          odds: result.odds,
+          point: result.point,
+          result: result.result,
+          date: result.date,
+          url: result.url,
+          course: result.course,
+          grade: result.grade,
+        },
+        create: {
+          raceId: result.raceId,
           name: result.name,
           odds: result.odds,
           point: result.point,

@@ -96,6 +96,7 @@ export const scrapeRaceData = async (raceId: string) => {
     const point = result > 5 ? 0 : +prizes[result - 1];
 
     return {
+      raceId,
       name: title.trim(),
       url: `https://db.netkeiba.com/race/${raceId}/`,
       date,

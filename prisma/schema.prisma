@@ -78,6 +78,7 @@ model Horse {
 
 model Race {
   id      Int    @id @default(autoincrement())
+  raceId  String?
   name    String
   odds    Float
   point   Int
@@ -88,6 +89,8 @@ model Race {
   url     String
   course  Course
   grade   Grade
+
+  @@unique([horseId, raceId])
 }
 
 model RaceSchedule {
