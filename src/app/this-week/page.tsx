@@ -3,7 +3,7 @@ import { getCurrentRaceScheduleWeek } from "@/lib/raceScheduleWeek";
 import { Bomb } from "lucide-react";
 import { Fragment } from "react";
 
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
 const formatDisplayDate = (date: string) => {
   const year = date.slice(0, 4);
@@ -80,6 +80,10 @@ const formatOdds = (odds: number) => {
   return odds.toFixed(1);
 };
 
+const formatResult = (result: number) => {
+  return `${result}着`;
+};
+
 const getOddsBombCount = (oddsAlertLevel: "small" | "medium" | "large" | null) => {
   if (oddsAlertLevel === "large") {
     return 3;
@@ -133,6 +137,26 @@ const RaceSchedulesPage = async () => {
     },
     orderBy: [{ date: "asc" }, { startTime: "asc" }, { raceNumber: "asc" }],
   });
+  const raceIds = [...new Set(schedules.map((schedule) => schedule.raceId))];
+  const horseIds = [...new Set(schedules.map((schedule) => schedule.horseId))];
+  const results =
+    raceIds.length === 0 || horseIds.length === 0
+      ? []
+      : await prisma.race.findMany({
+          where: {
+            raceId: {
+              in: raceIds,
+            },
+            horseId: {
+              in: horseIds,
+            },
+          },
+        });
+  const resultByScheduleKey = new Map(
+    results.flatMap((result) =>
+      result.raceId ? [[`${result.horseId}:${result.raceId}`, result] as const] : []
+    )
+  );
 
   const scheduleGroups = Array.from(
     schedules
@@ -182,7 +206,13 @@ const RaceSchedulesPage = async () => {
             const hasDartRuleWarning = schedules.some((schedule) =>
               schedule.horse.owners.some((owner) => owner.rule.isDart && isTurfRace)
             );
-            const oddsAlertLevel = getRaceOddsAlertLevel(schedules);
+            const oddsAlertLevel = getRaceOddsAlertLevel(
+              schedules.map((schedule) => ({
+                odds:
+                  resultByScheduleKey.get(`${schedule.horseId}:${schedule.raceId}`)?.odds ??
+                  schedule.odds,
+              }))
+            );
             const shouldShowDateHeading = scheduleGroups[index - 1]?.race.date !== race.date;
 
             return (
@@ -224,7 +254,11 @@ const RaceSchedulesPage = async () => {
                       const ownerLabels = schedule.horse.owners.map(
                         (owner) => `${owner.name}（${owner.season.name}・${owner.rule.name}）`
                       );
-                      const oddsAlertLevel = getOddsAlertLevel(schedule.odds);
+                      const result = resultByScheduleKey.get(
+                        `${schedule.horseId}:${schedule.raceId}`
+                      );
+                      const displayOdds = result?.odds ?? schedule.odds;
+                      const oddsAlertLevel = getOddsAlertLevel(displayOdds);
 
                       return (
                         <div key={schedule.id}>
@@ -264,7 +298,19 @@ const RaceSchedulesPage = async () => {
                               {ownerLabels.join(" / ")}
                             </div>
                           )}
-                          {schedule.odds !== null && (
+                          {result ? (
+                            <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                              <span className="badge badge-neutral badge-sm">結果</span>
+                              <span className="font-semibold">{formatResult(result.result)}</span>
+                              <span
+                                className={
+                                  oddsAlertLevel ? "font-semibold text-error" : "text-base-content/70"
+                                }
+                              >
+                                {formatOdds(result.odds)}倍
+                              </span>
+                            </div>
+                          ) : schedule.odds !== null ? (
                             <div
                               className={`mt-1 text-sm ${
                                 oddsAlertLevel ? "font-semibold text-error" : "text-base-content/70"
@@ -275,7 +321,7 @@ const RaceSchedulesPage = async () => {
                                 <span className="ml-2">{schedule.popularity}人気</span>
                               )}
                             </div>
-                          )}
+                          ) : null}
                         </div>
                       );
                     })}
